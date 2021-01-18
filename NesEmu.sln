@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NesEmu", "NesEmu\NesEmu.csproj", "{44786371-AE5F-40BF-9E82-590E8A7CA60F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NesEmu.Tests", "NesEmu.Tests\NesEmu.Tests.csproj", "{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{44786371-AE5F-40BF-9E82-590E8A7CA60F}.Release|x64.Build.0 = Release|Any CPU
 		{44786371-AE5F-40BF-9E82-590E8A7CA60F}.Release|x86.ActiveCfg = Release|Any CPU
 		{44786371-AE5F-40BF-9E82-590E8A7CA60F}.Release|x86.Build.0 = Release|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Debug|x64.Build.0 = Debug|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Debug|x86.Build.0 = Debug|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x64.ActiveCfg = Release|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x64.Build.0 = Release|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x86.ActiveCfg = Release|Any CPU
+		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
