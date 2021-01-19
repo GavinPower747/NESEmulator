@@ -3,8 +3,8 @@ namespace NesEmu.Core
     public class CPURegisters
     {
         public byte Accumulator;
-        public byte XRegister;
-        public byte YRegister;
+        public byte X;
+        public byte Y;
         public byte StackPointer;
         public ushort ProgramCounter; 
         public StatusRegister StatusRegister;
