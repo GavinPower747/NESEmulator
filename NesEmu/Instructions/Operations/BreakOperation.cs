@@ -6,7 +6,7 @@ namespace NesEmu.Instructions.Operations
 {
     public class BreakOperation : IOperationStrategy
     {
-        public int Operate(byte data, CPURegisters registers, CPUBus bus)
+        public int Operate(byte data, CPURegisters registers, IBus bus)
         {
             registers.ProgramCounter++;
             registers.StatusRegister.SetFlag(StatusRegister.InterruptDisable, true);

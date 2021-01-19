@@ -4,6 +4,6 @@ namespace NesEmu.Instructions.Addressing
 {
     public interface IAddressingStrategy
     {
-        (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, CPUBus bus);
+        (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus);
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace NesEmu.Core
 {
-    public class CPUBus
+    public class CPUBus : IBus
     {
         private CPU _cpu;
         private IDevice[] _connectedDevices;

@@ -9,7 +9,7 @@ namespace NesEmu.Core
     {
         public CPURegisters Registers;
 
-        private CPUBus _bus;
+        private IBus _bus;
         private int _cycles = 0;
 
         private Dictionary<ushort, Instruction> _opcodeLookup => new Dictionary<ushort, Instruction>()
@@ -19,7 +19,7 @@ namespace NesEmu.Core
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
-        public void ConnectBus(CPUBus bus) => _bus = bus;
+        public void ConnectBus(IBus bus) => _bus = bus;
 
         public void Tick()
         {

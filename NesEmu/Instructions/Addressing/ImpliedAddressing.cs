@@ -7,7 +7,7 @@ namespace NesEmu.Instructions.Addressing
     ///</summary>
     public class ImpliedAddressing : IAddressingStrategy
     {
-        public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, CPUBus bus)
+        public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
             return (registers.ProgramCounter, 0);
         }

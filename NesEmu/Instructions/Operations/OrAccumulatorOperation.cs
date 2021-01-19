@@ -6,7 +6,7 @@ namespace NesEmu.Instructions.Operations
 {
     public class OrAccumulatorOperation : IOperationStrategy
     {
-        public int Operate(byte data, CPURegisters registers, CPUBus bus)
+        public int Operate(byte data, CPURegisters registers, IBus bus)
         {
             registers.Accumulator = Convert.ToByte(data | registers.Accumulator);
 

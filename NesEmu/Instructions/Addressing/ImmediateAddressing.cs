@@ -8,7 +8,7 @@ namespace NesEmu.Instructions.Addressing
     ///</summary>
     public class ImmedaiteAddressing : IAddressingStrategy
     {
-        public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, CPUBus bus)
+        public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
             ushort address = Convert.ToUInt16(registers.ProgramCounter + 1);
             return (address, 0);
