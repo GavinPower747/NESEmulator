@@ -6,7 +6,6 @@ using Moq;
 
 namespace NesEmu.Tests.Instructions.Addressing
 {
-
     [TestFixture]
     public class IndirectYAddressingTests
     {
@@ -27,11 +26,13 @@ namespace NesEmu.Tests.Instructions.Addressing
             registers.ProgramCounter = 0x00;
             registers.Y = 0x01;
 
-            ushort expectedLowAddress = 0x01;
-            ushort expectedHiAddress = (ushort)(0x01 + 1);
+            byte arg = 0x01;
             byte lowData = 0x11;
-            byte hiData = 0xFF;
+            byte hiData = 0x22;
+            ushort expectedLowAddress = (ushort)(arg + 0x01);
+            ushort expectedHiAddress = (ushort)(arg + 0x01 + 1);
 
+            _cpuBus.Setup(x => x.Read((ushort)(registers.ProgramCounter + 1))).Returns(arg);
             _cpuBus.Setup(x => x.Read(expectedLowAddress)).Returns(lowData).Verifiable();
             _cpuBus.Setup(x => x.Read(expectedHiAddress)).Returns(hiData).Verifiable();
 

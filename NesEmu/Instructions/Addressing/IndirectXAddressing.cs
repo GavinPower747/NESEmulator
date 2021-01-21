@@ -1,21 +1,24 @@
-using System;
 using NesEmu.Core;
 
 namespace NesEmu.Instructions.Addressing
 {
+    //adr = PEEK(PEEK((arg + X) % 256) + PEEK((arg + X + 1) % 256) * 256)
     public class IndirectXAddressing : IAddressingStrategy
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
             registers.ProgramCounter++;
+            var arg = bus.Read(registers.ProgramCounter);
 
-            ushort lowAddress = Convert.ToUInt16(registers.ProgramCounter + registers.X);
+            ushort lowAddress = (ushort)(arg + registers.X);
+            lowAddress &= 0x00FF;
             var low = bus.Read(lowAddress);
 
-            ushort hiAddress = Convert.ToUInt16(registers.ProgramCounter + registers.X + 1);
+            ushort hiAddress = (ushort)(arg + registers.X + 1);
+            hiAddress &= 0x00FF;
             var hi = bus.Read(hiAddress);
 
-            ushort address = Convert.ToUInt16((hi << 8) | low);
+            ushort address = (ushort)((hi << 8) | low);
             return (address, 0);
         }
     }
