@@ -7,7 +7,6 @@ namespace NesEmu.Instructions.Addressing
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus) 
         {
-            registers.ProgramCounter++;
             var arg = bus.Read(registers.ProgramCounter);
 
             var low = bus.Read(arg);

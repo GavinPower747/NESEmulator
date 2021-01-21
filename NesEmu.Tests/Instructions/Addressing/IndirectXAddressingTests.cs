@@ -20,7 +20,6 @@ namespace NesEmu.Tests.Instructions.Addressing
         [Test]
         public void IndirectXAddressing_Returns_CorrectAddress()
         {
-            var sut = new IndirectXAddressing();
             var registers = new CPURegisters();
 
             registers.ProgramCounter = 0x00;
@@ -29,16 +28,16 @@ namespace NesEmu.Tests.Instructions.Addressing
             byte arg = 0x01;
             byte lowData = 0x11;
             byte hiData = 0x22;
-            ushort expectedLowAddress = (ushort)(arg + 0x01);
-            ushort expectedHiAddress = (ushort)(arg + 0x01 + 1);
+            ushort expectedLowAddress = (ushort)((arg + 0x01) & 0x00FF);
+            ushort expectedHiAddress = (ushort)((arg + 0x01 + 1) & 0x00FF);
 
-            _cpuBus.Setup(x => x.Read((ushort)(registers.ProgramCounter + 1))).Returns(arg);
-            _cpuBus.Setup(x => x.Read(expectedLowAddress)).Returns(lowData).Verifiable();
-            _cpuBus.Setup(x => x.Read(expectedHiAddress)).Returns(hiData).Verifiable();
+            _cpuBus.Setup(x => x.Read((ushort)(registers.ProgramCounter))).Returns(arg);
+            _cpuBus.Setup(x => x.Read(expectedLowAddress)).Returns(lowData);
+            _cpuBus.Setup(x => x.Read(expectedHiAddress)).Returns(hiData);
 
             var expectedAddress = (ushort)((hiData << 8) | lowData);
 
-            var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
+            var addressInfo = new IndirectXAddressing().GetOperationAddress(registers, _cpuBus.Object);
 
             Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
             Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
