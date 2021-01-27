@@ -2,7 +2,7 @@ using NesEmu.Core;
 
 namespace NesEmu.Instructions.Addressing
 {
-    //adr = PEEK((arg + Y) % 256)
+    //adr = (arg + Y) % 256)
     public class ZeroPageYOffsetAddressing : IAddressingStrategy
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)

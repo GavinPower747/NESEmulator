@@ -15,7 +15,26 @@ namespace NesEmu.Core
         private Dictionary<ushort, Instruction> _opcodeLookup => new Dictionary<ushort, Instruction>()
         {
             { 0x00, new Instruction( "BRK", new ImpliedAddressing(), new BreakOperation(), 7) },
-            { 0x01, new Instruction( "ORA", new IndirectXAddressing(), new OrAccumulatorOperation(), 6)}
+            { 0x09, new Instruction( "ORA", new ImmediateAddressing(), new LogicalOrOperation(), 2)},
+            { 0x05, new Instruction( "ORA", new ZeroPageAddressing(), new LogicalOrOperation(), 3)},
+            { 0x15, new Instruction( "ORA", new ZeroPageXOffsetAddressing(), new LogicalOrOperation(), 4)},
+            { 0x0D, new Instruction( "ORA", new AbsoluteAddressing(), new LogicalOrOperation(), 4)},
+            { 0x1D, new Instruction( "ORA", new AbsoluteXOffsetAddressing(), new LogicalOrOperation(), 4)},
+            { 0x19, new Instruction( "ORA", new AbsoluteYOffsetAddressing(), new LogicalOrOperation(), 4)},
+            { 0x01, new Instruction( "ORA", new IndirectXAddressing(), new LogicalOrOperation(), 6)},
+            { 0x11, new Instruction( "ORA", new IndirectYAddressing(), new LogicalOrOperation(), 5)},
+            { 0x29, new Instruction( "AND", new ImmediateAddressing(), new LogicalAndOperation(), 2)},
+            { 0x25, new Instruction( "AND", new ZeroPageAddressing(), new LogicalAndOperation(), 3)},
+            { 0x35, new Instruction( "AND", new ZeroPageXOffsetAddressing(), new LogicalAndOperation(), 4)},
+            { 0x2D, new Instruction( "AND", new AbsoluteAddressing(), new LogicalAndOperation(), 4)},
+            { 0x3D, new Instruction( "AND", new AbsoluteXOffsetAddressing(), new LogicalAndOperation(), 4)},
+            { 0x39, new Instruction( "AND", new AbsoluteYOffsetAddressing(), new LogicalAndOperation(), 4)},
+            { 0x21, new Instruction( "AND", new IndirectXAddressing(), new LogicalAndOperation(), 6)},
+            { 0x31, new Instruction( "AND", new IndirectYAddressing(), new LogicalAndOperation(), 5)},
+            { 0x18, new Instruction( "CLC", new ImpliedAddressing(), new ClearCarryFlagOperation(), 2)},
+            { 0xD8, new Instruction( "CLD", new ImpliedAddressing(), new ClearDecimalModeOperation(), 2)},
+            { 0x58, new Instruction( "CLI", new ImpliedAddressing(), new ClearInterruptDisableOperation(), 2)},
+            { 0xB8, new Instruction( "CLO", new ImpliedAddressing(), new ClearOverflowFlagOperation(), 2)}
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
