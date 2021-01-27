@@ -6,7 +6,7 @@ namespace NesEmu.Instructions.Addressing
     ///<summary>
     ///The following memory address will be used as the value for this instruction
     ///</summary>
-    public class ImmedaiteAddressing : IAddressingStrategy
+    public class ImmediateAddressing : IAddressingStrategy
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {

@@ -27,7 +27,7 @@ namespace NesEmu.Tests.Instructions.Addressing
 
             registers.ProgramCounter = 0x00;
 
-            var sut = new ImmedaiteAddressing();
+            var sut = new ImmediateAddressing();
             var result = sut.GetOperationAddress(registers, _cpuBus);
 
             Assert.That(result.address, Is.EqualTo(registers.ProgramCounter + 1));
@@ -45,7 +45,7 @@ namespace NesEmu.Tests.Instructions.Addressing
             registers.ProgramCounter = 0x00;
             registers.StatusRegister = status;
 
-            var sut = new ImmedaiteAddressing();
+            var sut = new ImmediateAddressing();
             var result = sut.GetOperationAddress(registers, _cpuBus);
 
             Assert.That(registers.StatusRegister, Is.EqualTo(status));
