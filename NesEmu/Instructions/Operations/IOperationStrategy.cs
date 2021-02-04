@@ -8,6 +8,6 @@ namespace NesEmu.Instructions.Operations
         ///Perform the specific operation
         ///</summary>
         ///<returns>The amount of extra cycles needed to complete the operation</returns>
-        int Operate(byte data, CPURegisters registers, IBus bus);
+        int Operate(ushort address, CPURegisters registers, IBus bus);
     }
 }

@@ -8,7 +8,7 @@ namespace NesEmu.Instructions.Operations
     ///<remarks>We are not modeling illegal opcodes they will use this operation and do nothing</remarks>
     public class NoOpOperation : IOperationStrategy
     {
-        public int Operate(byte data, CPURegisters registers, IBus bus)
+        public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
             return 0;
         }
