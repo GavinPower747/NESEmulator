@@ -34,7 +34,11 @@ namespace NesEmu.Core
             { 0x18, new Instruction( "CLC", new ImpliedAddressing(), new ClearCarryFlagOperation(), 2)},
             { 0xD8, new Instruction( "CLD", new ImpliedAddressing(), new ClearDecimalModeOperation(), 2)},
             { 0x58, new Instruction( "CLI", new ImpliedAddressing(), new ClearInterruptDisableOperation(), 2)},
-            { 0xB8, new Instruction( "CLO", new ImpliedAddressing(), new ClearOverflowFlagOperation(), 2)}
+            { 0xB8, new Instruction( "CLO", new ImpliedAddressing(), new ClearOverflowFlagOperation(), 2)},
+            { 0xC6, new Instruction( "DEC", new ZeroPageAddressing(), new DecrementMemoryOperation(), 5)},
+            { 0xD6, new Instruction( "DEC", new ZeroPageXOffsetAddressing(), new DecrementMemoryOperation(), 6)},
+            { 0xCE, new Instruction( "DEC", new AbsoluteAddressing(), new DecrementMemoryOperation(), 6)},
+            { 0xDE, new Instruction( "DEC", new AbsoluteXOffsetAddressing(), new DecrementMemoryOperation(), 7)}
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
@@ -56,8 +60,7 @@ namespace NesEmu.Core
                 Registers.ProgramCounter++;
 
                 var addressInfo = instruction.AddressingStrategy.GetOperationAddress(Registers, _bus);
-                var data = _bus.Read(addressInfo.address);
-                var operationExtraCycles = instruction.OperationStrategy.Operate(data, Registers, _bus);
+                var operationExtraCycles = instruction.OperationStrategy.Operate(addressInfo.address, Registers, _bus);
 
                 _cycles += addressInfo.extraCycles + operationExtraCycles;
             }
