@@ -13,11 +13,8 @@ namespace NesEmu.Instructions.Operations
 
             bus.Write(address, newValue);
 
-            if(newValue == 0)
-                registers.StatusRegister |= StatusRegister.Zero;
-
-            if(Convert.ToBoolean(newValue & 0x80))
-                registers.StatusRegister |= StatusRegister.Negative;
+            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Zero, newValue == 0);
+            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Negative, Convert.ToBoolean(newValue & 0x80));
 
             return 0;
         }

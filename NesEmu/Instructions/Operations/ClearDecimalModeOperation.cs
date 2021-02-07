@@ -7,7 +7,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            registers.StatusRegister.SetFlag(StatusRegister.Decimal, false);
+            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Decimal, false);
 
             return 0;
         }
