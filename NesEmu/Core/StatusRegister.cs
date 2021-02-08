@@ -3,7 +3,7 @@ using System;
 namespace NesEmu.Core
 {
     [Flags]
-    public enum StatusRegister
+    public enum StatusRegister : byte
     {
         Carry = (1 << 0),
         Zero = (1 << 1),

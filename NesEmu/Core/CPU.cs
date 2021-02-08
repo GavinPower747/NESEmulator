@@ -67,7 +67,11 @@ namespace NesEmu.Core
             { 0xA4, new Instruction( "LDY", new ZeroPageAddressing(), new LoadYRegisterOperation(), 3)},
             { 0xB4, new Instruction( "LDY", new ZeroPageXOffsetAddressing(), new LoadYRegisterOperation(), 4)},
             { 0xAC, new Instruction( "LDY", new AbsoluteAddressing(), new LoadYRegisterOperation(), 4)},
-            { 0xBC, new Instruction( "LDY", new AbsoluteXOffsetAddressing(), new LoadYRegisterOperation(), 4)}
+            { 0xBC, new Instruction( "LDY", new AbsoluteXOffsetAddressing(), new LoadYRegisterOperation(), 4)},
+            { 0x48, new Instruction( "PHA", new ImpliedAddressing(), new PushAccumulatorOperation(), 3)},
+            { 0x08, new Instruction( "PHP", new ImpliedAddressing(), new PushProcessorStatusOperation(), 3)},
+            { 0x68, new Instruction( "PLA", new ImpliedAddressing(), new PullAccumulatorOperation(), 4)},
+            { 0x28, new Instruction( "PLP", new ImpliedAddressing(), new PullStatusOperation(), 4)}
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
