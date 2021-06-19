@@ -71,7 +71,13 @@ namespace NesEmu.Core
             { 0x48, new Instruction( "PHA", new ImpliedAddressing(), new PushAccumulatorOperation(), 3)},
             { 0x08, new Instruction( "PHP", new ImpliedAddressing(), new PushProcessorStatusOperation(), 3)},
             { 0x68, new Instruction( "PLA", new ImpliedAddressing(), new PullAccumulatorOperation(), 4)},
-            { 0x28, new Instruction( "PLP", new ImpliedAddressing(), new PullStatusOperation(), 4)}
+            { 0x28, new Instruction( "PLP", new ImpliedAddressing(), new PullStatusOperation(), 4)},
+            { 0xAA, new Instruction( "TAX", new ImpliedAddressing(), new TransferAccumulatorX(), 2)},
+            { 0xA8, new Instruction( "TAY", new ImpliedAddressing(), new TransferAccumulatorY(), 2)},
+            { 0xBA, new Instruction( "TXS", new ImpliedAddressing(), new TransferStackXOperation(), 2)},
+            { 0x8A, new Instruction( "TXA", new ImpliedAddressing(), new TransferXAccumulator(), 2)},
+            { 0x9A, new Instruction( "TSX", new ImpliedAddressing(), new TransferXStackOperation(), 2)},
+            
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
