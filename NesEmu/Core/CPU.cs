@@ -93,7 +93,15 @@ namespace NesEmu.Core
             { 0x94, new Instruction( "STY", new ZeroPageXOffsetAddressing(), new StoreYRegisterOperation(), 4)},
             { 0x8C, new Instruction( "STY", new AbsoluteAddressing(), new StoreYRegisterOperation(), 4)},
             { 0xF8, new Instruction( "SED", new ImpliedAddressing(), new SetDecimalFlagOperation(), 2)},
-            { 0x38, new Instruction( "SEC", new ImpliedAddressing(), new SetCarryFlagOperation(), 2)}
+            { 0x38, new Instruction( "SEC", new ImpliedAddressing(), new SetCarryFlagOperation(), 2)},
+            { 0x69, new Instruction( "ADC", new ImmediateAddressing(), new AddWithCarryOperation(), 2)},
+            { 0x65, new Instruction( "ADC", new ZeroPageAddressing(), new AddWithCarryOperation(), 3)},
+            { 0x75, new Instruction( "ADC", new ZeroPageXOffsetAddressing(), new AddWithCarryOperation(), 4)},
+            { 0x6D, new Instruction( "ADC", new AbsoluteAddressing(), new AddWithCarryOperation(), 4)},
+            { 0x7D, new Instruction( "ADC", new AbsoluteXOffsetAddressing(), new AddWithCarryOperation(), 4)},
+            { 0x79, new Instruction( "ADC", new AbsoluteYOffsetAddressing(), new AddWithCarryOperation(), 4)},
+            { 0x61, new Instruction( "ADC", new IndirectXAddressing(), new AddWithCarryOperation(), 6)},
+            { 0x71, new Instruction( "ADC", new IndirectYAddressing(), new AddWithCarryOperation(), 5)}
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
