@@ -77,7 +77,23 @@ namespace NesEmu.Core
             { 0xBA, new Instruction( "TXS", new ImpliedAddressing(), new TransferStackXOperation(), 2)},
             { 0x8A, new Instruction( "TXA", new ImpliedAddressing(), new TransferXAccumulator(), 2)},
             { 0x9A, new Instruction( "TSX", new ImpliedAddressing(), new TransferXStackOperation(), 2)},
-            
+            { 0x98, new Instruction( "TYA", new ImpliedAddressing(), new TransferYAccumulator(), 2)},
+            { 0x78, new Instruction( "SEI", new ImpliedAddressing(), new SetInteruptDisableOperation(), 2)},
+            { 0x85, new Instruction( "STA", new ZeroPageAddressing(), new StoreAccumulatorOperation(), 3)},
+            { 0x95, new Instruction( "STA", new ZeroPageXOffsetAddressing(), new StoreAccumulatorOperation(), 4)},
+            { 0x8D, new Instruction( "STA", new AbsoluteAddressing(), new StoreAccumulatorOperation(), 4)},
+            { 0x9D, new Instruction( "STA", new AbsoluteXOffsetAddressing(), new StoreAccumulatorOperation(), 5)},
+            { 0x99, new Instruction( "STA", new AbsoluteYOffsetAddressing(), new StoreAccumulatorOperation(), 5)},
+            { 0x81, new Instruction( "STA", new IndirectXAddressing(), new StoreAccumulatorOperation(), 6)},
+            { 0x91, new Instruction( "STA", new IndirectYAddressing(), new StoreAccumulatorOperation(), 6)},
+            { 0x86, new Instruction( "STX", new ZeroPageAddressing(), new StoreXRegisterOperation(), 3)},
+            { 0x96, new Instruction( "STX", new ZeroPageYOffsetAddressing(), new StoreXRegisterOperation(), 4)},
+            { 0x8E, new Instruction( "STX", new AbsoluteAddressing(), new StoreXRegisterOperation(), 4)},
+            { 0x84, new Instruction( "STY", new ZeroPageAddressing(), new StoreYRegisterOperation(), 3)},
+            { 0x94, new Instruction( "STY", new ZeroPageXOffsetAddressing(), new StoreYRegisterOperation(), 4)},
+            { 0x8C, new Instruction( "STY", new AbsoluteAddressing(), new StoreYRegisterOperation(), 4)},
+            { 0xF8, new Instruction( "SED", new ImpliedAddressing(), new SetDecimalFlagOperation(), 2)},
+            { 0x38, new Instruction( "SEC", new ImpliedAddressing(), new SetCarryFlagOperation(), 2)}
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
