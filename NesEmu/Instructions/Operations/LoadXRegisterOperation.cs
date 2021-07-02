@@ -1,6 +1,5 @@
 using System;
 using NesEmu.Core;
-using NesEmu.Extensions;
 
 namespace NesEmu.Instructions.Operations
 {
@@ -11,9 +10,7 @@ namespace NesEmu.Instructions.Operations
             var data = bus.Read(address);
             registers.X = data;
 
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Zero, registers.X == 0);
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Negative, Convert.ToBoolean(registers.X & 0x80));
-
+            registers.StatusRegister.SetZeroAndNegative(registers.X);
             return 0;
         }
     }

@@ -138,7 +138,7 @@ namespace NesEmu.Core
 
         public void Interrupt()
         {
-            if(Registers.StatusRegister.HasFlag(StatusRegister.InterruptDisable))
+            if(Registers.StatusRegister.InterruptDisable)
                 return;
         }
     }

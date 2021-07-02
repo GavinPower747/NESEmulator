@@ -1,6 +1,5 @@
 using System;
 using NesEmu.Core;
-using NesEmu.Extensions;
 
 namespace NesEmu.Instructions.Operations
 {
@@ -13,8 +12,7 @@ namespace NesEmu.Instructions.Operations
 
             bus.Write(address, newValue);
 
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Zero, newValue == 0);
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Negative, Convert.ToBoolean(newValue & 0x80));
+            registers.StatusRegister.SetZeroAndNegative(newValue);
 
             return 0;
         }

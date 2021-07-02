@@ -1,6 +1,4 @@
 using NesEmu.Core;
-using NesEmu.Extensions;
-using System;
 
 namespace NesEmu.Instructions.Operations
 {
@@ -10,8 +8,7 @@ namespace NesEmu.Instructions.Operations
         {
             registers.X += 1;
 
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Zero, registers.X == 0);
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Negative, Convert.ToBoolean(registers.X & 0x80));
+            registers.StatusRegister.SetZeroAndNegative(registers.X);
 
             return 0;
         }

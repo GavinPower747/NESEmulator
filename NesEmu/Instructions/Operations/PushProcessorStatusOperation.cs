@@ -1,5 +1,4 @@
 using NesEmu.Core;
-using NesEmu.Extensions;
 using System;
 
 namespace NesEmu.Instructions.Operations
@@ -15,8 +14,8 @@ namespace NesEmu.Instructions.Operations
 
             bus.Write(stackAddress, Convert.ToByte(registers.StatusRegister));
 
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Break, false);
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.B, false);
+            registers.StatusRegister.Break = false;
+            registers.StatusRegister.B = false;
 
             registers.StackPointer--;
 

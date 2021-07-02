@@ -1,5 +1,4 @@
 using NesEmu.Core;
-using System;
 
 namespace NesEmu.Instructions.Operations
 {
@@ -14,7 +13,7 @@ namespace NesEmu.Instructions.Operations
 
             byte statusRegister = bus.Read((ushort)(0x0100 + registers.StackPointer));
 
-            registers.StatusRegister = (StatusRegister)statusRegister;
+            registers.StatusRegister = new StatusRegister(statusRegister);
 
             return 0;
         }

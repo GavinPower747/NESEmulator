@@ -2,21 +2,50 @@ using System;
 
 namespace NesEmu.Core
 {
-    [Flags]
-    public enum StatusRegister : byte
+    public class StatusRegister
     {
-        Carry = (1 << 0),
-        Zero = (1 << 1),
-        InterruptDisable = (1 << 2),
+        public bool Carry { get => GetFlag(0); set => SetFlag(0, value); }
+        public bool Zero { get => GetFlag(1); set => SetFlag(1, value); }
+        public bool InterruptDisable { get => GetFlag(2); set => SetFlag(2, value); }
 
         //Not used on the NES
-        Decimal = (1 << 3),
-        Break = (1 << 4),
+        public bool Decimal { get => GetFlag(3); set => SetFlag(3, value); }
+        public bool Break { get => GetFlag(4); set => SetFlag(4, value); }
         
         //Should be unused for our purposes
         //http://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
-        B = (1 << 5),
-        Overflow = (1 << 6),
-        Negative = (1 << 7)
+        public bool B { get => GetFlag(5); set => SetFlag(5, value); }
+        public bool Overflow { get => GetFlag(6); set => SetFlag(6, value); }
+        public bool Negative { get => GetFlag(7); set => SetFlag(7, value); }
+
+        private byte _flags { get; set; }
+
+        public StatusRegister(byte initialValues)
+        {
+            _flags = initialValues;
+        }
+
+        public void SetZeroAndNegative(byte value)
+        {
+            Zero = (value & 0x00FF) == 0;
+	        Negative = (value & 0x80) != 0;
+        }
+
+        private bool GetFlag(int index)
+        {
+            var mask = (byte)(1 << index);
+
+            return (_flags & mask) != 0;
+        }
+
+        private void SetFlag(int index, bool value)
+        {
+            byte mask = (byte)(1 << index);
+
+            if(value)
+                _flags |= mask;
+            else
+                _flags &= (byte)~mask;
+        }
     }
 }

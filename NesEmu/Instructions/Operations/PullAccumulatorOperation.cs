@@ -1,6 +1,4 @@
 using NesEmu.Core;
-using NesEmu.Extensions;
-using System;
 
 namespace NesEmu.Instructions.Operations
 {
@@ -15,9 +13,7 @@ namespace NesEmu.Instructions.Operations
 
             registers.Accumulator = bus.Read((byte)(0x0100 + registers.StackPointer));
 
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Zero, registers.Accumulator == 0);
-            registers.StatusRegister = registers.StatusRegister.SetFlag(StatusRegister.Negative, Convert.ToBoolean(registers.Accumulator & 0x80));
-
+            registers.StatusRegister.SetZeroAndNegative(registers.Accumulator);
             return 0;
         }
     }

@@ -1,5 +1,4 @@
 using NesEmu.Core;
-using NesEmu.Extensions;
 
 namespace NesEmu.Instructions.Operations
 {
@@ -7,7 +6,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            registers.StatusRegister.SetFlag(StatusRegister.Decimal, true);
+            registers.StatusRegister.Decimal = true;
 
             return 0;
         }
