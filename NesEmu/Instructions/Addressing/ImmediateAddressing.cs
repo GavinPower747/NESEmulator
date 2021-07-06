@@ -10,7 +10,7 @@ namespace NesEmu.Instructions.Addressing
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
-            ushort address = Convert.ToUInt16(registers.ProgramCounter + 1);
+            ushort address = (ushort)(registers.ProgramCounter + 1);
             return (address, 0);
         }
     }

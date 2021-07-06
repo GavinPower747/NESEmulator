@@ -1,4 +1,4 @@
-using System;
+using NesEmu.Extensions;
 
 namespace NesEmu.Core
 {
@@ -28,7 +28,7 @@ namespace NesEmu.Core
         public void SetZeroAndNegative(byte value)
         {
             Zero = (value & 0x00FF) == 0;
-	        Negative = (value & 0x80) != 0;
+	        Negative = value.IsNegative();
         }
 
         private bool GetFlag(int index)
