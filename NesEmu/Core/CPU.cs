@@ -106,7 +106,20 @@ namespace NesEmu.Core
             { 0x06, new Instruction( "ASL", new ZeroPageAddressing(), new ArithmeticShiftLeftOperation(), 5)},
             { 0x16, new Instruction( "ASL", new ZeroPageXOffsetAddressing(), new ArithmeticShiftLeftOperation(), 6)},
             { 0x0E, new Instruction( "ASL", new AbsoluteAddressing(), new ArithmeticShiftLeftOperation(), 6)},
-            { 0x1E, new Instruction( "ASL", new AbsoluteXOffsetAddressing(), new ArithmeticShiftLeftOperation(), 7)}
+            { 0x1E, new Instruction( "ASL", new AbsoluteXOffsetAddressing(), new ArithmeticShiftLeftOperation(), 7)},
+            { 0x2A, new Instruction( "ROL", new ImpliedAddressing(), new RotateLeftAccumulatorOperation(), 2)},
+            { 0x26, new Instruction( "ROL", new ZeroPageAddressing(), new RotateLeftOperation(), 5)},
+            { 0x36, new Instruction( "ROL", new ZeroPageXOffsetAddressing(), new RotateLeftOperation(), 6)},
+            { 0x2E, new Instruction( "ROL", new AbsoluteAddressing(), new RotateLeftOperation(), 6)},
+            { 0x3E, new Instruction( "ROL", new AbsoluteXOffsetAddressing(), new RotateLeftOperation(), 7)},
+            { 0x90, new Instruction( "BCC", new RelativeAddressing(), new BranchOperation(reg => !reg.StatusRegister.Carry), 2)},
+            { 0xB0, new Instruction( "BCS", new RelativeAddressing(), new BranchOperation(reg => reg.StatusRegister.Carry), 2)},
+            { 0xF0, new Instruction( "BEQ", new RelativeAddressing(), new BranchOperation(reg => reg.StatusRegister.Zero), 2)},
+            { 0x30, new Instruction( "BMI", new RelativeAddressing(), new BranchOperation(reg => reg.StatusRegister.Negative), 2)},
+            { 0xD0, new Instruction( "BNE", new RelativeAddressing(), new BranchOperation(reg => !reg.StatusRegister.Zero), 2)},
+            { 0x10, new Instruction( "BPL", new RelativeAddressing(), new BranchOperation(reg => !reg.StatusRegister.Negative), 2)},
+            { 0x50, new Instruction( "BVC", new RelativeAddressing(), new BranchOperation(reg => !reg.StatusRegister.Overflow), 2)},
+            { 0x70, new Instruction( "BVS", new RelativeAddressing(), new BranchOperation(reg => reg.StatusRegister.Overflow), 2)}
         };
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
 
