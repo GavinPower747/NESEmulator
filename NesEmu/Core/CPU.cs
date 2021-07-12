@@ -153,8 +153,19 @@ namespace NesEmu.Core
             { 0x66, new Instruction( "ROR", new ZeroPageAddressing(), new RotateRightOperation(), 5)},
             { 0x76, new Instruction( "ROR", new ZeroPageXOffsetAddressing(), new RotateRightOperation(), 6)},
             { 0x6E, new Instruction( "ROR", new AbsoluteAddressing(), new RotateRightOperation(), 6)},
-            { 0x7E, new Instruction( "ROR", new AbsoluteXOffsetAddressing(), new RotateRightOperation(), 7)}
+            { 0x7E, new Instruction( "ROR", new AbsoluteXOffsetAddressing(), new RotateRightOperation(), 7)},
+            { 0x40, new Instruction( "RTI", new ImpliedAddressing(), new ReturnFromInterrupt(), 6)},
+            { 0x60, new Instruction( "RTS", new ImpliedAddressing(), new ReturnFromSubroutine(), 6)},
+            { 0xE9, new Instruction( "SBC", new ImmediateAddressing(), new SubtractWithCarryOperation(), 2)},
+            { 0xE5, new Instruction( "SBC", new ZeroPageAddressing(), new SubtractWithCarryOperation(), 3)},
+            { 0xF5, new Instruction( "SBC", new ZeroPageXOffsetAddressing(), new SubtractWithCarryOperation(), 4)},
+            { 0xED, new Instruction( "SBC", new AbsoluteAddressing(), new SubtractWithCarryOperation(), 4)},
+            { 0xFD, new Instruction( "SBC", new AbsoluteXOffsetAddressing(), new SubtractWithCarryOperation(), 4)},
+            { 0xF9, new Instruction( "SBC", new AbsoluteYOffsetAddressing(), new SubtractWithCarryOperation(), 4)},
+            { 0xE1, new Instruction( "SBC", new IndirectXAddressing(), new SubtractWithCarryOperation(), 6)},
+            { 0xF1, new Instruction( "SBC", new IndirectYAddressing(), new SubtractWithCarryOperation(), 5)}
         };
+
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
 
         public void ConnectBus(IBus bus) => _bus = bus;
