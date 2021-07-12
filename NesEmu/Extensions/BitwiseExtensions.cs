@@ -13,6 +13,16 @@ namespace NesEmu.Extensions
         }
 
         ///<summary>
+        ///Determine if a particular bit in a byte is active
+        ///</summary>
+        public static bool GetBitValue(this byte val, int bitNumber)
+        {
+            byte bitMask = (byte)(1 << (bitNumber - 1));
+
+            return (val & bitMask) > 0;
+        }
+
+        ///<summary>
         ///Determine if two shorts are on the same memory page by comparing the hi byte
         ///</summary>
         public static bool IsOnSamePageAs(this ushort val, ushort other)
