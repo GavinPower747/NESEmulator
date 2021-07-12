@@ -21,7 +21,7 @@ namespace NesEmu.Instructions.Operations
             registers.StackPointer--;
             registers.StatusRegister.Break = false;
 
-            registers.ProgramCounter = (ushort)(bus.Read(0xFFFE) | (bus.Read(0xFFFF) << 8));
+            registers.ProgramCounter = (ushort)(bus.ReadByte(0xFFFE) | (bus.ReadByte(0xFFFF) << 8));
 
             return 0;
         }

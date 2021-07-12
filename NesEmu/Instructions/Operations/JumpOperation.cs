@@ -6,7 +6,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            var jumpLocation = bus.Read(address);
+            var jumpLocation = bus.ReadByte(address);
 
             registers.ProgramCounter = jumpLocation;
 

@@ -15,7 +15,7 @@ namespace NesEmu.Instructions.Operations
 
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            ushort memoryVal = bus.Read(address);
+            ushort memoryVal = bus.ReadByte(address);
             ushort registerVal = _selector(registers);
             ushort comparedVal = (ushort)(registerVal - memoryVal);
 

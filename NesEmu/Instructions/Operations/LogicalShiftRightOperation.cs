@@ -7,7 +7,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            byte origVal = bus.Read(address);
+            byte origVal = bus.ReadByte(address);
             byte shiftedVal = (byte)(origVal / 2);
 
             registers.StatusRegister.Carry = origVal.GetBitValue(0);

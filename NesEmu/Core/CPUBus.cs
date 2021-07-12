@@ -17,12 +17,25 @@ namespace NesEmu.Core
             _ram = new byte[8 * 1024]; //8kb of RAM
         }
 
-        public byte Read(ushort address)
+        public byte ReadByte(ushort address)
         {
             if(address > 0x0000 && address < 0xFFFF)
                 return _ram[address];
 
             return 0;
+        }
+
+        public ushort ReadWord(ushort address)
+        {
+            if(address > 0x0000 && address < 0xFFFF)
+            {
+                var lo = (ushort)_ram[address];
+                var hi = (ushort)_ram[address + 1];
+
+                return (ushort)(hi << 8 | lo);
+            }
+
+            return 0;    
         }
 
         public void Write(ushort address, byte data)

@@ -7,7 +7,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            var memoryVal = bus.Read(address);
+            var memoryVal = bus.ReadByte(address);
 
             registers.StatusRegister.Zero = (memoryVal & registers.Accumulator) == 0;
 

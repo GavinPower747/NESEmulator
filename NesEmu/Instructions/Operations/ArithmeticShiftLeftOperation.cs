@@ -7,7 +7,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            byte memValue = bus.Read(address);
+            byte memValue = bus.ReadByte(address);
             memValue <<= 1;
             registers.StatusRegister.Carry = (memValue & 0xFF00) > 0;
 	        registers.StatusRegister.SetZeroAndNegative(memValue);

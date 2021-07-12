@@ -11,7 +11,7 @@ namespace NesEmu.Instructions.Operations
         {
             registers.StackPointer++;
 
-            registers.Accumulator = bus.Read((byte)(0x0100 + registers.StackPointer));
+            registers.Accumulator = bus.ReadByte(registers.GetStackAddress());
 
             registers.StatusRegister.SetZeroAndNegative(registers.Accumulator);
             return 0;

@@ -11,7 +11,7 @@ namespace NesEmu.Instructions.Operations
         {
             registers.StackPointer++;
 
-            byte statusRegister = bus.Read((ushort)(0x0100 + registers.StackPointer));
+            byte statusRegister = bus.ReadByte(registers.GetStackAddress());
 
             registers.StatusRegister = new StatusRegister(statusRegister);
 

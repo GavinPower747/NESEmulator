@@ -165,7 +165,7 @@ namespace NesEmu.Core
             //like that just do everything on the last cycle
             if(_cycles == 0)
             {
-                var opcode = _bus.Read(Registers.ProgramCounter);
+                var opcode = _bus.ReadByte(Registers.ProgramCounter);
                 var instruction = _opcodeLookup[opcode];
 
                 if(instruction is null)

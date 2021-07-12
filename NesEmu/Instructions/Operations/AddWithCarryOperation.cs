@@ -7,7 +7,7 @@ namespace NesEmu.Instructions.Operations
     {
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            var value = bus.Read(address);
+            var value = bus.ReadByte(address);
             var carryValue = registers.StatusRegister.Carry ? (byte)1 : (byte)0;
             var added = (byte)(registers.Accumulator + value + carryValue);
 
