@@ -37,9 +37,9 @@ namespace NesEmu.Tests.Instructions.Addressing
         public void ImpliedAddressing_ShoutNot_ModifyStatus()
         {
             var registers = new CPURegisters();
-            var status = new StatusRegister();
+            var status = new StatusRegister(0x00);
             
-            status.SetFlag(StatusRegister.Zero, true);
+            status.Zero = true;
 
             registers.ProgramCounter = 0x00;
             registers.StatusRegister = status;

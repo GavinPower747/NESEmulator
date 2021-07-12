@@ -30,11 +30,11 @@ namespace NesEmu.Tests.Instructions.Operations
             var bus = new Mock<IBus>();
             var registers = new CPURegisters();
 
-            registers.StatusRegister.SetFlag(StatusRegister.Carry, true);
+            registers.StatusRegister.Carry = true;
 
             var extraCycles = new ClearCarryFlagOperation().Operate(0x00, registers, bus.Object);
 
-            Assert.That(registers.StatusRegister.HasFlag(StatusRegister.Carry), Is.False);
+            Assert.That(registers.StatusRegister.Carry, Is.False);
         }
     }
 }

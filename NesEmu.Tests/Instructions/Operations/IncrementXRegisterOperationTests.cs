@@ -30,8 +30,8 @@ namespace NesEmu.Tests.Instructions.Operations
 
             _bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never);
             Assert.That(registers.X, Is.EqualTo(0x02 + 1));
-            Assert.False(registers.StatusRegister.HasFlag(StatusRegister.Negative));
-            Assert.False(registers.StatusRegister.HasFlag(StatusRegister.Zero));
+            Assert.False(registers.StatusRegister.Negative);
+            Assert.False(registers.StatusRegister.Zero);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace NesEmu.Tests.Instructions.Operations
 
             new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
 
-            Assert.True(registers.StatusRegister.HasFlag(StatusRegister.Negative));
+            Assert.True(registers.StatusRegister.Negative);
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace NesEmu.Tests.Instructions.Operations
 
             new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
 
-            Assert.True(registers.StatusRegister.HasFlag(StatusRegister.Zero));
+            Assert.True(registers.StatusRegister.Zero);
         }
     }
 }

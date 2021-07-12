@@ -11,6 +11,11 @@ namespace NesEmu.Core
 
         private const ushort StackBaseAddress = 0x0100;
 
+        public CPURegisters()
+        {
+            StatusRegister = new StatusRegister(0x00);
+        }
+
         public ushort GetStackAddress() => (ushort)(StackBaseAddress + StackPointer);
     }
 }

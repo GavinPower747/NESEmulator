@@ -34,7 +34,7 @@ namespace NesEmu.Core
             { 0x18, new Instruction( "CLC", new ImpliedAddressing(), new ClearCarryFlagOperation(), 2)},
             { 0xD8, new Instruction( "CLD", new ImpliedAddressing(), new ClearDecimalModeOperation(), 2)},
             { 0x58, new Instruction( "CLI", new ImpliedAddressing(), new ClearInterruptDisableOperation(), 2)},
-            { 0xB8, new Instruction( "CLO", new ImpliedAddressing(), new ClearOverflowFlagOperation(), 2)},
+            { 0xB8, new Instruction( "CLV", new ImpliedAddressing(), new ClearOverflowFlagOperation(), 2)},
             { 0xC6, new Instruction( "DEC", new ZeroPageAddressing(), new DecrementMemoryOperation(), 5)},
             { 0xD6, new Instruction( "DEC", new ZeroPageXOffsetAddressing(), new DecrementMemoryOperation(), 6)},
             { 0xCE, new Instruction( "DEC", new AbsoluteAddressing(), new DecrementMemoryOperation(), 6)},
@@ -155,7 +155,7 @@ namespace NesEmu.Core
             { 0x6E, new Instruction( "ROR", new AbsoluteAddressing(), new RotateRightOperation(), 6)},
             { 0x7E, new Instruction( "ROR", new AbsoluteXOffsetAddressing(), new RotateRightOperation(), 7)}
         };
-        private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 0);
+        private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
 
         public void ConnectBus(IBus bus) => _bus = bus;
 

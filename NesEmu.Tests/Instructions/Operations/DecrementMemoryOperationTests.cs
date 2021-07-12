@@ -32,8 +32,8 @@ namespace NesEmu.Tests.Instructions.Operations
             new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
 
             _bus.Verify(x => x.Write(address, (byte)(data - 1)), Times.Once);
-            Assert.False(registers.StatusRegister.HasFlag(StatusRegister.Negative));
-            Assert.False(registers.StatusRegister.HasFlag(StatusRegister.Zero));
+            Assert.False(registers.StatusRegister.Negative);
+            Assert.False(registers.StatusRegister.Zero);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace NesEmu.Tests.Instructions.Operations
 
             new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
 
-            Assert.True(registers.StatusRegister.HasFlag(StatusRegister.Negative));
+            Assert.True(registers.StatusRegister.Negative);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace NesEmu.Tests.Instructions.Operations
 
             new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
 
-            Assert.True(registers.StatusRegister.HasFlag(StatusRegister.Zero));
+            Assert.True(registers.StatusRegister.Zero);
         }
     }
 }
