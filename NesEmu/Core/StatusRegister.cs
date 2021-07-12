@@ -25,6 +25,9 @@ namespace NesEmu.Core
             _flags = initialValues;
         }
 
+        public static implicit operator byte(StatusRegister register) => register._flags;
+        public static explicit operator StatusRegister(byte b) => new StatusRegister(b);
+
         public void SetZeroAndNegative(byte value)
         {
             Zero = (value & 0x00FF) == 0;

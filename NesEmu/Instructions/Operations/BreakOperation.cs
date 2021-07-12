@@ -17,7 +17,7 @@ namespace NesEmu.Instructions.Operations
             registers.StackPointer--;
 
             registers.StatusRegister.Break = true;
-            bus.Write(registers.GetStackAddress(), Convert.ToByte(registers.StatusRegister));
+            bus.Write(registers.GetStackAddress(), registers.StatusRegister);
             registers.StackPointer--;
             registers.StatusRegister.Break = false;
 
