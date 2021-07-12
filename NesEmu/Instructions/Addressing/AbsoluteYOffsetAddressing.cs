@@ -1,4 +1,5 @@
 using NesEmu.Core;
+using NesEmu.Extensions;
 
 namespace NesEmu.Instructions.Addressing
 {
@@ -12,7 +13,7 @@ namespace NesEmu.Instructions.Addressing
 
             ushort address = (ushort)(arg + registers.Y);
 
-            if((address & 0xFF00) != (arg & 0xFF00))
+            if(!address.IsOnSamePageAs(arg))
                 return (address, 1);
             else
                 return (address, 0);

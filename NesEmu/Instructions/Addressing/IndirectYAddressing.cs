@@ -1,4 +1,5 @@
 using NesEmu.Core;
+using NesEmu.Extensions;
 
 namespace NesEmu.Instructions.Addressing
 {
@@ -19,7 +20,7 @@ namespace NesEmu.Instructions.Addressing
             
             //If the offset results in a change of page this operation
             //will need an extra cycle
-            if((address & 0xFF00) != (hi << 8))
+            if(!address.IsOnSamePageAs((ushort)(hi << 8)))
                 return (address, 1);
             else
                 return (address, 0);
