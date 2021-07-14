@@ -1,7 +1,7 @@
 using System;
 using NesEmu.Core;
 using NesEmu.Extensions;
-using NesEmu.Instructions.Operations;
+using NesEmu.Devices.CPU.Instructions.Operations;
 using NUnit;
 using NUnit.Framework;
 using Moq;

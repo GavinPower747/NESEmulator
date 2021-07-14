@@ -2,7 +2,7 @@ using System.Reflection;
 using NUnit;
 using NUnit.Framework;
 using NesEmu.Core;
-using NesEmu.Instructions.Operations;
+using NesEmu.Devices.CPU.Instructions.Operations;
 using Moq;
 
 namespace NesEmu.Tests.Instructions.Operations
