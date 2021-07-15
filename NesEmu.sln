@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NesEmu", "NesEmu\NesEmu.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NesEmu.Tests", "NesEmu.Tests\NesEmu.Tests.csproj", "{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NesEmu.Console", "NesEmu.Console\NesEmu.Console.csproj", "{93FFEE63-FC05-44DF-BF53-4065E7A38408}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x64.Build.0 = Release|Any CPU
 		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x86.ActiveCfg = Release|Any CPU
 		{E2FE42E7-BC69-4E2F-A94A-9BEFF8DFD49D}.Release|x86.Build.0 = Release|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Debug|x64.Build.0 = Debug|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Debug|x86.Build.0 = Debug|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Release|x64.ActiveCfg = Release|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Release|x64.Build.0 = Release|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Release|x86.ActiveCfg = Release|Any CPU
+		{93FFEE63-FC05-44DF-BF53-4065E7A38408}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
