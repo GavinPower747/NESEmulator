@@ -1,8 +1,10 @@
 using NUnit;
 using NUnit.Framework;
 using NesEmu.Core;
+using NesEmu.Devices.CPU;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 using NesEmu.Extensions;
-using NesEmu.Instructions.Addressing;
+
 
 namespace NesEmu.Tests.Instructions.Addressing
 {

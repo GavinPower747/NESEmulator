@@ -1,4 +1,4 @@
-namespace NesEmu.Core
+namespace NesEmu.Devices.CPU
 {
     public class CPURegisters
     {

@@ -2,6 +2,7 @@ using System.Reflection;
 using NUnit;
 using NUnit.Framework;
 using NesEmu.Core;
+using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
 using Moq;
 
@@ -26,7 +27,7 @@ namespace NesEmu.Tests.Instructions.Operations
             
             var registers = new CPURegisters();
 
-            _bus.Setup(x => x.Read(address)).Returns(data);
+            _bus.Setup(x => x.ReadByte(address)).Returns(data);
             _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
 
             new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
@@ -44,7 +45,7 @@ namespace NesEmu.Tests.Instructions.Operations
             
             var registers = new CPURegisters();
 
-            _bus.Setup(x => x.Read(address)).Returns(data);
+            _bus.Setup(x => x.ReadByte(address)).Returns(data);
             _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
 
             new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
@@ -60,7 +61,7 @@ namespace NesEmu.Tests.Instructions.Operations
            
             var registers = new CPURegisters();
 
-            _bus.Setup(x => x.Read(address)).Returns(data);
+            _bus.Setup(x => x.ReadByte(address)).Returns(data);
             _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
 
             new DecrementMemoryOperation().Operate(address, registers, _bus.Object);

@@ -1,10 +1,12 @@
 using System;
 using NesEmu.Core;
 using NesEmu.Extensions;
+using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
 using NUnit;
 using NUnit.Framework;
 using Moq;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 
 namespace NesEmu.Tests.Instructions.Operations
 {

@@ -1,5 +1,6 @@
 using NesEmu.Core;
-using NesEmu.Instructions.Addressing;
+using NesEmu.Devices.CPU;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 using NUnit;
 using NUnit.Framework;
 using Moq;
@@ -27,7 +28,7 @@ namespace NesEmu.Tests.Instructions.Addressing
 
             byte expectedAddress = 0x0011;
 
-            _bus.Setup(x => x.Read((byte)(registers.ProgramCounter))).Returns(expectedAddress);
+            _bus.Setup(x => x.ReadByte((byte)(registers.ProgramCounter))).Returns(expectedAddress);
 
             var addressInfo = strat.GetOperationAddress(registers, _bus.Object);
 

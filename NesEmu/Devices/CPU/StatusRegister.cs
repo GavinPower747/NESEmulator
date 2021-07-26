@@ -1,7 +1,7 @@
 using System.Threading;
 using NesEmu.Extensions;
 
-namespace NesEmu.Core
+namespace NesEmu.Devices.CPU
 {
     public class StatusRegister
     {

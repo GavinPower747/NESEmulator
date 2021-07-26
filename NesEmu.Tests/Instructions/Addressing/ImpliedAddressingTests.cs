@@ -1,6 +1,7 @@
 using NesEmu.Core;
 using NesEmu.Extensions;
-using NesEmu.Instructions.Addressing;
+using NesEmu.Devices.CPU;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 using NUnit;
 using NUnit.Framework;
 

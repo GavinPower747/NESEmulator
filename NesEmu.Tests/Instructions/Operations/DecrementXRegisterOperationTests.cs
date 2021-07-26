@@ -1,5 +1,6 @@
 using System;
 using NesEmu.Core;
+using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
 using NUnit;
 using NUnit.Framework;

@@ -1,5 +1,6 @@
 using NesEmu.Core;
-using NesEmu.Instructions.Addressing;
+using NesEmu.Devices.CPU;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 using NUnit;
 using NUnit.Framework;
 using Moq;
@@ -24,7 +25,7 @@ namespace NesEmu.Tests.Instructions.Addressing
 
             registers.ProgramCounter = 0x0000;
 
-            _bus.Setup(x => x.Read(0x0000)).Returns(0x0011);
+            _bus.Setup(x => x.ReadByte(0x0000)).Returns(0x0011);
 
             ushort expectedAddress = (ushort)(0x0011 & 0x00FF);
 

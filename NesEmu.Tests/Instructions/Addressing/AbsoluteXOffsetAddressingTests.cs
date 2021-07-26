@@ -1,5 +1,6 @@
 using NesEmu.Core;
-using NesEmu.Instructions.Addressing;
+using NesEmu.Devices.CPU;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 using NUnit;
 using NUnit.Framework;
 using Moq;
@@ -28,7 +29,7 @@ namespace NesEmu.Instructions.Addressing
             byte arg = 0x0011;
             byte expectedAddress = (byte)(arg + 0x01);
 
-            _bus.Setup(x => x.Read((byte)(registers.ProgramCounter))).Returns(arg);
+            _bus.Setup(x => x.ReadByte((byte)(registers.ProgramCounter))).Returns(arg);
 
             var addressInfo = new AbsoluteXOffsetAddressing().GetOperationAddress(registers, _bus.Object);
 
@@ -47,7 +48,7 @@ namespace NesEmu.Instructions.Addressing
             byte arg = 0x01;
             ushort expectedAddress = (ushort)(arg + 0xFF);
 
-            _bus.Setup(x => x.Read((byte)(registers.ProgramCounter))).Returns(arg);
+            _bus.Setup(x => x.ReadByte((byte)(registers.ProgramCounter))).Returns(arg);
 
             var addressInfo = new AbsoluteXOffsetAddressing().GetOperationAddress(registers, _bus.Object);
 

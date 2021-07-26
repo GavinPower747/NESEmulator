@@ -1,5 +1,6 @@
 using NesEmu.Core;
-using NesEmu.Instructions.Addressing;
+using NesEmu.Devices.CPU;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 using NUnit;
 using NUnit.Framework;
 using Moq;
@@ -32,9 +33,9 @@ namespace NesEmu.Tests.Instructions.Addressing
             ushort expectedLowAddress = (ushort)(arg);
             ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
 
-            _cpuBus.Setup(x => x.Read((ushort)(registers.ProgramCounter))).Returns(arg);
-            _cpuBus.Setup(x => x.Read(expectedLowAddress)).Returns(lowData).Verifiable();
-            _cpuBus.Setup(x => x.Read(expectedHiAddress)).Returns(hiData).Verifiable();
+            _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
+            _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
+            _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
 
             var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
 
@@ -61,9 +62,9 @@ namespace NesEmu.Tests.Instructions.Addressing
             ushort expectedLowAddress = (ushort)(arg);
             ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
 
-            _cpuBus.Setup(x => x.Read((ushort)(registers.ProgramCounter))).Returns(arg);
-            _cpuBus.Setup(x => x.Read(expectedLowAddress)).Returns(lowData).Verifiable();
-            _cpuBus.Setup(x => x.Read(expectedHiAddress)).Returns(hiData).Verifiable();
+            _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
+            _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
+            _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
 
             var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
 

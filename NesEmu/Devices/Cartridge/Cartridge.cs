@@ -51,21 +51,7 @@ namespace NesEmu.Devices.Cartridge
                 {
                     _characterRom = reader.ReadBytes(characterBankCount * 0x2000);
                 }
-
-                OutputProgramData(programBankCount, characterBankCount, control1, control2, programSize, mapperId, mirrorModeByte);
             }
-        }
-
-        private void OutputProgramData(byte programBankCount, byte characterBankCount, byte control1, byte control2, byte programSize, byte mapperId, byte mirrorModeByte)
-        {
-            Console.WriteLine($"ProgramBankCount: {programBankCount.ToString()}");
-            Console.WriteLine($"CharacterBankCount: {characterBankCount.ToString()}");
-            Console.WriteLine($"control1: {Convert.ToString(control1, 2).PadLeft(8, '0')}");
-            Console.WriteLine($"control2: {Convert.ToString(control2, 2).PadLeft(8, '0')}");
-            Console.WriteLine($"ProgramSize: {programSize.ToString()}");
-            Console.WriteLine($"MapperId: {mapperId.ToString()}");
-            Console.WriteLine($"Mirror Mode: {mirrorModeByte}");
-            Console.WriteLine($"Program Data: {BitConverter.ToString(_programBody.ToArray())}");
         }
     }
 }

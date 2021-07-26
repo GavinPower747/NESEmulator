@@ -23,7 +23,7 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1">
-                <TextBlock>Right Panel Bottom</TextBlock>
+                <Button HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
             </StackPanel>
         </Grid>
     </Border>

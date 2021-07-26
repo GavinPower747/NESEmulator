@@ -9,14 +9,14 @@ namespace NesEmu.Core
     ///</summary>
     public class NintendoEntertainmentSystem
     {
-        private readonly CPU _processor;
-        private readonly CPUBus _cpuBus;
+        public readonly CPU Processor;
+        public readonly CPUBus CpuBus;
         private Cartridge _cartridge;
 
         public NintendoEntertainmentSystem()
         {
-            _processor = new CPU();
-            _cpuBus = new CPUBus(_processor);
+            Processor = new CPU();
+            CpuBus = new CPUBus(Processor);
         }
 
         public void Reset()
