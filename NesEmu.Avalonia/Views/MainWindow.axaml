@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:NesEmu.Avalonia.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="NesEmu.Avalonia.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="NesEmu.Avalonia">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Border>
+        <Grid RowDefinitions="*, *" ColumnDefinitions="2*, *">
+            <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"> 
+                <TextBlock Text="Left Panel" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="0">
+                <TextBlock>Right Panel Top</TextBlock>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <TextBlock>Right Panel Bottom</TextBlock>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
