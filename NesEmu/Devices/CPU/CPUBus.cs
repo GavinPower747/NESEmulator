@@ -15,7 +15,7 @@ namespace NesEmu.Devices.CPU
             _connectedDevices = Array.Empty<IDevice>();
             _cpu.ConnectBus(this);
 
-            _ram = new byte[8 * 1024]; //8kb of RAM
+            _ram = new byte[64 * 1024]; //64kb of RAM
         }
 
         public byte ReadByte(ushort address)

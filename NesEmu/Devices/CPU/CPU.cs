@@ -169,6 +169,11 @@ namespace NesEmu.Devices.CPU
 
         private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
 
+        public CPU()
+        {
+            Registers = new CPURegisters();
+        }
+
         public void ConnectBus(IBus bus) => _bus = bus;
 
         public void Tick()
@@ -178,7 +183,9 @@ namespace NesEmu.Devices.CPU
             if(_cycles == 0)
             {
                 var opcode = _bus.ReadByte(Registers.ProgramCounter);
-                var instruction = _opcodeLookup[opcode];
+                Instruction instruction = null;
+
+                _opcodeLookup.TryGetValue(opcode, out instruction);
 
                 if(instruction is null)
                     instruction = _noOpInstruction;
@@ -213,6 +220,142 @@ namespace NesEmu.Devices.CPU
         {
             if(Registers.StatusRegister.InterruptDisable)
                 return;
+        }
+
+        public Dictionary<ushort, string> GetDisassembly(ushort start, ushort end)
+        {
+            var values = new Dictionary<ushort, string>();
+            var address = start;
+
+            while(address < end)
+            {
+                Instruction instruction = null;
+                var opcode = _bus.ReadByte(address);
+                var lineAddress = address;
+                var lineString = string.Empty;
+
+                if(opcode == 0)
+                {
+                    address++;
+                    continue;
+                }
+
+                _opcodeLookup.TryGetValue(opcode, out instruction);
+
+                if(instruction is null)
+                    instruction = _noOpInstruction;
+
+                address++;
+
+                lineString = instruction.Name;
+
+                switch (instruction.AddressingStrategy)
+                {
+                    case ImpliedAddressing _:
+                        lineString += " {IMP}";
+                        break;
+                    case ImmediateAddressing _:
+                        {
+                            var value = _bus.ReadByte(address);
+                            address++;
+                            lineString += "#$" + value.ToString("X2") + " {IMM}";
+                            break;
+                        }
+
+                    case ZeroPageAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + lo.ToString("X2") + " {ZP0}";
+                            break;
+                        }
+
+                    case ZeroPageXOffsetAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + lo.ToString("X2") + ", X {ZPX}";
+                            break;
+                        }
+
+                    case ZeroPageYOffsetAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + lo.ToString("X2") + ", Y {ZPY}";
+                            break;
+                        }
+
+                    case IndirectXAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            lineString += "($" + lo.ToString("X2") + ", X) {IZX}";
+                            break;
+                        }
+
+                    case IndirectYAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            lineString += "($" + lo.ToString("X2") + "), Y {IZY}";
+                            break;
+                        }
+
+                    case AbsoluteAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            var hi = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + ((ushort)(hi << 8) | lo).ToString("X4") + " {ABS}";
+                            break;
+                        }
+
+                    case AbsoluteXOffsetAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            var hi = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + ((ushort)((hi << 8) | lo)).ToString("X4") + ", X {ABX}";
+                            break;
+                        }
+
+                    case AbsoluteYOffsetAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            var hi = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + ((ushort)((hi << 8) | lo)).ToString("X4") + ", Y {ABY}";
+                            break;
+                        }
+
+                    case IndirectAddressing _:
+                        {
+                            var lo = _bus.ReadByte(address);
+                            address++;
+                            var hi = _bus.ReadByte(address);
+                            address++;
+                            lineString += "($" + ((ushort)(hi << 8) | lo).ToString("X4") + ") {IND}";
+                            break;
+                        }
+
+                    case RelativeAddressing _:
+                        {
+                            var value = _bus.ReadByte(address);
+                            address++;
+                            lineString += "$" + value.ToString("X2") + " [$" + ((ushort)address + value).ToString("X4") + "] {REL}";
+                            break;
+                        }
+                }
+
+                if(!values.ContainsKey(lineAddress))
+                    values.Add(lineAddress, lineString);
+            }
+
+            return values;
         }
     }
 }

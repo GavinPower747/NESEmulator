@@ -13,17 +13,41 @@
     </Design.DataContext>
 
     <Border>
-        <Grid RowDefinitions="*, *" ColumnDefinitions="2*, *">
-            <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"> 
-                <TextBlock Text="Left Panel" />
-            </StackPanel>
+        <Grid RowDefinitions="*, 3*" ColumnDefinitions="2*, *">
+                <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto" AllowAutoHide="True">
+                    <TextBlock TextWrapping="Wrap" Margin="5" Text="{Binding MemoryString}" />
+                </ScrollViewer>
 
             <StackPanel Grid.Column="1" Grid.Row="0">
-                <TextBlock>Right Panel Top</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="20" Foreground="{Binding CarryColour}">C</TextBlock>
+                    <TextBlock Margin="20" Foreground="{Binding ZeroColour}">Z</TextBlock>
+                    <TextBlock Margin="20" Foreground="{Binding InterruptColour}">I</TextBlock>
+                    <TextBlock Margin="20" Foreground="{Binding DecimalColour}">D</TextBlock>
+                    <TextBlock Margin="20" Foreground="{Binding BreakColour}">B</TextBlock>
+                    <TextBlock Margin="20" Foreground="{Binding OverflowColour}">O</TextBlock>
+                    <TextBlock Margin="20" Foreground="{Binding NegativeColour}">N</TextBlock>
+                </StackPanel>
+                <TextBlock Text="{Binding Accumulator}"/>
+                <TextBlock Text="{Binding StackPointer}"/>
+                <TextBlock Text="{Binding ProgramCounter}"/>
+                <TextBlock Text="{Binding XRegister}" />
+                <TextBlock Text="{Binding YRegister}" />
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1">
-                <Button HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
+                <ItemsRepeater Items="{Binding DisassembledCode}">
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock IsVisible="{Binding [2]}" Text=">" Margin="5"/>
+                                <TextBlock Text="{Binding [3]}" Margin="5"/>
+                                <TextBlock Text="{Binding [1]}" Margin="5"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+                <Button Command="{Binding StepCPU}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
             </StackPanel>
         </Grid>
     </Border>
