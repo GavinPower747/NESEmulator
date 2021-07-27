@@ -10,8 +10,8 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
-            ushort address = (ushort)(registers.ProgramCounter + 1);
-            return (address, 0);
+            registers.ProgramCounter++;
+            return (registers.ProgramCounter, 0);
         }
     }
 }
