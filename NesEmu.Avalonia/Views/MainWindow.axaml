@@ -48,6 +48,7 @@
                     </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>
                 <Button Command="{Binding StepCPU}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
+                <Button Command="{Binding ResetConsole}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Reset</Button>
             </StackPanel>
         </Grid>
     </Border>

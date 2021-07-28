@@ -151,6 +151,14 @@ namespace NesEmu.Avalonia.ViewModels
             UpdateRegisters();
         }
 
+        public void ResetConsole()
+        {
+            _nes.Reset();
+
+            UpdateMemory();
+            UpdateRegisters();
+        }
+
         private void UpdateMemory()
         {
             var zeroPage = GetRamString(0x0000, 16, 16);
@@ -213,6 +221,7 @@ namespace NesEmu.Avalonia.ViewModels
 
         private void LoadExampleProgram()
         {
+            //The following program multiplies 3 by 10
             /*
                 *=$8000
                 LDX #10

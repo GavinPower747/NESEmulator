@@ -21,7 +21,7 @@ namespace NesEmu.Core
 
         public void Reset()
         {
-            //ToDo
+            Processor.Reset();
         }
 
         public void LoadCartridge(string pathToRom)
