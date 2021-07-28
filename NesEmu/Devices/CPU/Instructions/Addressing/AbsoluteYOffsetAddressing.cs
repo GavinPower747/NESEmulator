@@ -3,13 +3,16 @@ using NesEmu.Extensions;
 
 namespace NesEmu.Devices.CPU.Instructions.Addressing
 {
-    //adr = arg + Y
+    ///<summary>
+    ///Read the full 16 bit address and offset the read value
+    ///by the value in the Y register
+    ///</summary>
     public class AbsoluteYOffsetAddressing : IAddressingStrategy
     {
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
-            var arg = bus.ReadByte(registers.ProgramCounter);
-            registers.ProgramCounter++;
+            var arg = bus.ReadWord(registers.ProgramCounter);
+            registers.ProgramCounter += 2;
 
             ushort address = (ushort)(arg + registers.Y);
 
