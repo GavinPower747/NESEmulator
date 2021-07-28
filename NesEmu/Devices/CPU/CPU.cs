@@ -216,6 +216,8 @@ namespace NesEmu.Devices.CPU
             _cycles = 8;
         }
 
+        public bool OpComplete() => _cycles == 0;
+
         public void Interrupt()
         {
             if(Registers.StatusRegister.InterruptDisable)
@@ -247,7 +249,7 @@ namespace NesEmu.Devices.CPU
 
                 address++;
 
-                lineString = instruction.Name;
+                lineString = instruction.Name + "  ";
 
                 switch (instruction.AddressingStrategy)
                 {

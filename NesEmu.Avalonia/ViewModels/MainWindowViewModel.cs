@@ -1,6 +1,4 @@
-﻿using System.Reflection.PortableExecutable;
-using System.Collections.ObjectModel;
-using Avalonia.Media;
+﻿using Avalonia.Media;
 using System;
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
@@ -144,7 +142,10 @@ namespace NesEmu.Avalonia.ViewModels
 
         public void StepCPU()
         {
-            _nes.Processor.Tick();
+            do
+            {
+                _nes.Processor.Tick();
+            } while(!_nes.Processor.OpComplete());
 
             UpdateMemory();
             UpdateRegisters();
@@ -152,17 +153,27 @@ namespace NesEmu.Avalonia.ViewModels
 
         private void UpdateMemory()
         {
+            var zeroPage = GetRamString(0x0000, 16, 16);
+            var instructions = GetRamString(0x8000, 16, 16);
+            MemoryString = zeroPage + Environment.NewLine + instructions;
+        }
+
+        private string GetRamString(ushort nAddr, int nRows, int nColumns)
+        {
             var builder = new StringBuilder();
 
-            for(int i = 0; i < 64 * 1024; i += 2)
-            {
-                var lo = _nes.CpuBus.ReadByte((ushort)i);
-                var hi = _nes.CpuBus.ReadByte((ushort)(i+1));
+		    for (int row = 0; row < nRows; row++)
+		    {
+		    	builder.Append("$" + nAddr.ToString("X4") + ":");
+		    	for (int col = 0; col < nColumns; col++)
+		    	{
+		    		builder.Append(" " + _nes.CpuBus.ReadByte(nAddr).ToString("X2"));
+		    		nAddr += 1;
+		    	}
+                builder.AppendLine();
+		    }
 
-                builder.Append(BitConverter.ToString(new byte[2]{lo, hi}) + "    ");
-            }
-
-            MemoryString = builder.ToString();
+            return builder.ToString();
         }
         
         private void UpdateRegisters()
@@ -177,11 +188,11 @@ namespace NesEmu.Avalonia.ViewModels
             OverflowColour = _cpuRegisters.StatusRegister.Overflow ? Brushes.Green : Brushes.Red;
             NegativeColour = _cpuRegisters.StatusRegister.Negative ? Brushes.Green : Brushes.Red;
 
-            Accumulator = "Accumulator: " + _cpuRegisters.Accumulator.ToString("X2");
+            Accumulator = "Accumulator: " + _cpuRegisters.Accumulator.ToString("X2") + " [" + _cpuRegisters.Accumulator + "]";
             StackPointer = "Stack Pointer: " + _cpuRegisters.StackPointer.ToString("X2");
-            ProgramCounter = "Program Counter: " + _cpuRegisters.ProgramCounter.ToString("X2");
-            XRegister = "X Register: " + _cpuRegisters.X.ToString("X2");
-            YRegister = "Y Register: " + _cpuRegisters.Y.ToString("X2");
+            ProgramCounter = "Program Counter: " + _cpuRegisters.ProgramCounter.ToString("X4");
+            XRegister = "X Register: " + _cpuRegisters.X.ToString("X2") + " [" + _cpuRegisters.X + "]";
+            YRegister = "Y Register: " + _cpuRegisters.Y.ToString("X2") + " [" + _cpuRegisters.Y + "]";
 
             //It's 3am fuck off with your judgement
             var newList = new List<(ushort key, string value, bool isActive, string displayValue)>();

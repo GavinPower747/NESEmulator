@@ -20,7 +20,7 @@ namespace NesEmu.Devices.CPU
 
         public byte ReadByte(ushort address)
         {
-            if(address > 0x0000 && address < 0xFFFF)
+            if(address >= 0x0000 && address <= 0xFFFF)
                 return _ram[address];
 
             return 0;
@@ -28,7 +28,7 @@ namespace NesEmu.Devices.CPU
 
         public ushort ReadWord(ushort address)
         {
-            if(address > 0x0000 && address < 0xFFFF)
+            if(address >= 0x0000 && address <= 0xFFFF)
             {
                 var lo = (ushort)_ram[address];
                 var hi = (ushort)_ram[address + 1];
@@ -41,7 +41,7 @@ namespace NesEmu.Devices.CPU
 
         public void Write(ushort address, byte data)
         {
-            if(address > 0x0000 && address < 0xFFFF)
+            if(address >= 0x0000 && address <= 0xFFFF)
                  _ram[address] = data;
         }
     }
