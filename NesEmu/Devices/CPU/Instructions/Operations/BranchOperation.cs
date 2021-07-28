@@ -19,7 +19,7 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
                 return 0;
 
             var initialProgramCounter = registers.ProgramCounter;
-            registers.ProgramCounter += address;
+            registers.ProgramCounter = address;
 
             if(initialProgramCounter.IsOnSamePageAs(registers.ProgramCounter))
                 return 1;

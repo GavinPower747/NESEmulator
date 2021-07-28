@@ -8,7 +8,9 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing
         {
             var offset = bus.ReadByte(registers.ProgramCounter);
 
-            ushort valueAddress = (ushort)(registers.ProgramCounter + 1 + offset);
+            registers.ProgramCounter++;
+
+            ushort valueAddress = (ushort)(registers.ProgramCounter + offset);
 
             if (offset >= 0x80)
                 valueAddress -= 0x100;

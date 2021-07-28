@@ -9,7 +9,7 @@ namespace NesEmu.Extensions
         {
             byte negativeMask = 1 << 7;
 
-            return (val & negativeMask) == 0;
+            return (val & negativeMask) == 1;
         }
 
         ///<summary>
