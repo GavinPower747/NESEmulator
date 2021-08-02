@@ -1,9 +1,17 @@
 using NesEmu.Core;
+using NesEmu.Devices.CPU.Attributes;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 
 namespace NesEmu.Devices.CPU.Instructions.Operations
 {
+    [OpCode(OpCodeAddress = 0x66, AddressingMode = typeof(ZeroPageAddressing), Cycles = 5)]
+    [OpCode(OpCodeAddress = 0x76, AddressingMode = typeof(ZeroPageXOffsetAddressing), Cycles = 6)]
+    [OpCode(OpCodeAddress = 0x6E, AddressingMode = typeof(AbsoluteAddressing), Cycles = 6)]
+    [OpCode(OpCodeAddress = 0x7E, AddressingMode = typeof(AbsoluteXOffsetAddressing), Cycles = 7)]
     public class RotateRightOperation : IOperationStrategy
     {
+        public string Name => "ROR";
+
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
             var hadCarry = registers.StatusRegister.Carry;
@@ -23,8 +31,11 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
     }
 
     //Certain opcodes require this operation to operate on the accumulator
+    [OpCode(OpCodeAddress = 0x6A, AddressingMode = typeof(ImpliedAddressing), Cycles = 2)]
     public class RotateRightAccumulatorOperation : IOperationStrategy
     {
+        public string Name => "ROR";
+
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
             var hadCarry = registers.StatusRegister.Carry;

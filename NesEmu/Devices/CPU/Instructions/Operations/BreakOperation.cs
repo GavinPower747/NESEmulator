@@ -1,10 +1,15 @@
 using System;
 using NesEmu.Core;
+using NesEmu.Devices.CPU.Attributes;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 
 namespace NesEmu.Devices.CPU.Instructions.Operations
 {
+    [OpCode( OpCodeAddress = 0x00, AddressingMode = typeof(ImpliedAddressing), Cycles = 7)]
     public class BreakOperation : IOperationStrategy
     {
+        public string Name => "BRK";
+
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
             registers.ProgramCounter++;

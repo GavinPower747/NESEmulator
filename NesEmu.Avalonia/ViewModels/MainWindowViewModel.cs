@@ -161,19 +161,19 @@ namespace NesEmu.Avalonia.ViewModels
 
         private void UpdateMemory()
         {
-            var zeroPage = GetRamString(0x0000, 16, 16);
-            var instructions = GetRamString(0x8000, 16, 16);
+            var zeroPage = GetRamPages(0x0000, 16);
+            var instructions = GetRamPages(0x8000, 16);
             MemoryString = zeroPage + Environment.NewLine + instructions;
         }
 
-        private string GetRamString(ushort nAddr, int nRows, int nColumns)
+        private string GetRamPages(ushort nAddr, int numberOfPages)
         {
             var builder = new StringBuilder();
 
-		    for (int row = 0; row < nRows; row++)
+		    for (int row = 0; row < numberOfPages; row++)
 		    {
 		    	builder.Append("$" + nAddr.ToString("X4") + ":");
-		    	for (int col = 0; col < nColumns; col++)
+		    	for (int col = 0; col < 16; col++)
 		    	{
 		    		builder.Append(" " + _nes.CpuBus.ReadByte(nAddr).ToString("X2"));
 		    		nAddr += 1;

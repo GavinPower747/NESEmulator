@@ -1,10 +1,14 @@
-using System.Threading;
 using NesEmu.Core;
+using NesEmu.Devices.CPU.Attributes;
+using NesEmu.Devices.CPU.Instructions.Addressing;
 
 namespace NesEmu.Devices.CPU.Instructions.Operations
 {
+    [OpCode( OpCodeAddress = 0x20, AddressingMode = typeof(AbsoluteAddressing), Cycles = 6)]
     public class JumpToSubroutineOperation : IOperationStrategy
     {
+        public string Name => "JSR";
+
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
             registers.ProgramCounter--;
