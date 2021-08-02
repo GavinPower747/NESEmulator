@@ -49,6 +49,8 @@
                 </ItemsRepeater>
                 <Button Command="{Binding StepCPU}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
                 <Button Command="{Binding ResetConsole}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Reset</Button>
+                <Button Command="{Binding PerformInterrupt}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Interrupt</Button>
+                <Button Command="{Binding NonMaskableInterrupt}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Non Maskable Interrupt</Button>
             </StackPanel>
         </Grid>
     </Border>

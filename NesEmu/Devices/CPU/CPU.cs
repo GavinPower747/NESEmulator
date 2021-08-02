@@ -75,6 +75,13 @@ namespace NesEmu.Devices.CPU
         {
             if(Registers.StatusRegister.InterruptDisable)
                 return;
+
+            PerformInterrupt();
+        }
+
+        public void NonMaskableInterrupt()
+        {
+            PerformInterrupt();
         }
 
         public Dictionary<ushort, string> GetDisassembly(ushort start, ushort end)
@@ -231,6 +238,24 @@ namespace NesEmu.Devices.CPU
                     _opcodeLookup.Add(opcodeAttribute.OpCodeAddress, instruction);
                 }
             }
+        }
+
+        private void PerformInterrupt()
+        {
+            _bus.Write(Registers.GetStackAddress(), (byte)((Registers.ProgramCounter >> 8) & 0x00FF));
+	        Registers.StackPointer--;
+
+	        _bus.Write(Registers.GetStackAddress(), (byte)(Registers.ProgramCounter & 0x00FF));
+	        Registers.StackPointer--;
+
+            Registers.StatusRegister.Break = true;
+            Registers.StatusRegister.InterruptDisable = true;
+	        _bus.Write(Registers.GetStackAddress(), Registers.StatusRegister);
+	        Registers.StackPointer--;
+
+	        Registers.ProgramCounter = _bus.ReadWord(0xFFFA);
+
+	        _cycles = 8;
         }
     }
 }

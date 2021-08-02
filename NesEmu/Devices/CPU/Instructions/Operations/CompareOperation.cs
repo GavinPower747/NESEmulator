@@ -1,4 +1,3 @@
-using System;
 using NesEmu.Core;
 using NesEmu.Devices.CPU.Attributes;
 using NesEmu.Devices.CPU.Instructions.Addressing;
@@ -8,8 +7,6 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
     public abstract class CompareOperation : IOperationStrategy
     {
         public abstract string Name { get; }
-
-        private Func<CPURegisters, byte> _selector;
 
         public abstract int Operate(ushort address, CPURegisters registers, IBus bus);
 

@@ -24,6 +24,16 @@ namespace NesEmu.Core
             Processor.Reset();
         }
 
+        public void Interrupt()
+        {
+            Processor.Interrupt();
+        }
+
+        public void NonMaskableInterrupt()
+        {
+            Processor.NonMaskableInterrupt();
+        }
+
         public void LoadCartridge(string pathToRom)
         {
             _cartridge = new Cartridge(pathToRom);

@@ -159,6 +159,22 @@ namespace NesEmu.Avalonia.ViewModels
             UpdateRegisters();
         }
 
+        public void PerformInterrupt()
+        {
+            _nes.Interrupt();
+
+            UpdateMemory();
+            UpdateRegisters();
+        }
+
+        public void NonMaskableInterrupt()
+        {
+            _nes.NonMaskableInterrupt();
+
+            UpdateMemory();
+            UpdateRegisters();
+        }
+
         private void UpdateMemory()
         {
             var zeroPage = GetRamPages(0x0000, 16);

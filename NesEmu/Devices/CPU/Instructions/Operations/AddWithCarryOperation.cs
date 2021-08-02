@@ -1,4 +1,3 @@
-using System.Reflection.Emit;
 using System;
 using NesEmu.Core;
 using NesEmu.Devices.CPU.Attributes;
