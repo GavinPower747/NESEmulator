@@ -1,12 +1,14 @@
-using System;
+using NesEmu.Core;
 using System.IO;
 using System.Collections.Generic;
 
 namespace NesEmu.Devices.Cartridge
 {
-    public class Cartridge
+    public class Cartridge : IAddressableDevice
     {
-        private List<byte> _programBody;
+        public AddressableRange AddressableRange { get; }
+
+        public List<byte> _programBody;
         private byte[] _characterRom;
         private string _pathToRom;
 
@@ -43,15 +45,20 @@ namespace NesEmu.Devices.Cartridge
                 var programData = reader.ReadBytes(programBankCount * 0x4000);
                 _programBody.AddRange(programData);
 
-                if(characterBankCount == 0)
-                {
-                    _characterRom = new byte[0x2000];
-                }                
-                else
-                {
-                    _characterRom = reader.ReadBytes(characterBankCount * 0x2000);
-                }
+                _characterRom = characterBankCount > 0 
+                    ? reader.ReadBytes(characterBankCount * 0x2000) 
+                    : new byte[0x2000];
             }
+        }
+
+        public byte Read(ushort address)
+        {
+            return 0;
+        }
+
+        public void Write(ushort address, byte data)
+        {
+
         }
     }
 }

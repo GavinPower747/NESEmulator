@@ -96,12 +96,6 @@ namespace NesEmu.Devices.CPU
                 var lineAddress = address;
                 var lineString = string.Empty;
 
-                if(opcode == 0)
-                {
-                    address++;
-                    continue;
-                }
-
                 _opcodeLookup.TryGetValue(opcode, out instruction);
 
                 if(instruction is null)

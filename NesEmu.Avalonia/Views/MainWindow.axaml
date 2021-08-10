@@ -36,17 +36,19 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1">
-                <ItemsRepeater Items="{Binding DisassembledCode}">
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock IsVisible="{Binding [2]}" Text=">" Margin="5"/>
-                                <TextBlock Text="{Binding [3]}" Margin="5"/>
-                                <TextBlock Text="{Binding [1]}" Margin="5"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" AllowAutoHide="True">
+                    <ItemsRepeater Items="{Binding DisassembledCode}">
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock IsVisible="{Binding [2]}" Text=">" Margin="5, 0"/>
+                                    <TextBlock Text="{Binding [3]}" Margin="5,0"/>
+                                    <TextBlock Text="{Binding [1]}" Margin="5,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </ScrollViewer>
                 <Button Command="{Binding StepCPU}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
                 <Button Command="{Binding ResetConsole}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Reset</Button>
                 <Button Command="{Binding PerformInterrupt}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Interrupt</Button>

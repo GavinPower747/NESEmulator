@@ -21,11 +21,9 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
         {
             var fetched = bus.ReadByte(address);
 
-            //Invert the fetched byte and add it
             ushort value = (ushort)(fetched ^ 0x00FF);
             byte carryValue = registers.StatusRegister.Carry ? (byte)1 : (byte)0;
             
-            // Notice this is exactly the same as addition from here!
             byte subtracted = (byte)(registers.Accumulator + value + carryValue);
             registers.StatusRegister.Carry = subtracted > 255;
             registers.StatusRegister.SetZeroAndNegative(subtracted);

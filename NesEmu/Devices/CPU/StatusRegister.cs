@@ -1,4 +1,3 @@
-using System.Threading;
 using NesEmu.Extensions;
 
 namespace NesEmu.Devices.CPU
@@ -32,7 +31,7 @@ namespace NesEmu.Devices.CPU
         public void SetZeroAndNegative(byte value)
         {
             Zero = (value & 0x00FF) == 0;
-	        Negative = value.IsNegative();
+            Negative = value.IsNegative();
         }
 
         private bool GetFlag(int index)

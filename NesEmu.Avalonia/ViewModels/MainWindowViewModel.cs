@@ -5,6 +5,7 @@ using NesEmu.Devices.CPU;
 using ReactiveUI;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NesEmu.Avalonia.ViewModels
 {
@@ -177,22 +178,28 @@ namespace NesEmu.Avalonia.ViewModels
 
         private void UpdateMemory()
         {
-            var zeroPage = GetRamPages(0x0000, 16);
-            var instructions = GetRamPages(0x8000, 16);
-            MemoryString = zeroPage + Environment.NewLine + instructions;
+            var zeroPage = GetRamPage(0x0000); //Data
+            var secondPage = GetRamPage(0x0200); //Results
+            var thirdPage = GetRamPage(0x0300); //Results
+            var instructions = GetRamPage(0x8000);
+            MemoryString = zeroPage + Environment.NewLine 
+                + secondPage + Environment.NewLine 
+                + thirdPage + Environment.NewLine 
+                + instructions;
         }
 
-        private string GetRamPages(ushort nAddr, int numberOfPages)
+        private string GetRamPage(ushort startingAddress)
         {
             var builder = new StringBuilder();
 
-		    for (int row = 0; row < numberOfPages; row++)
+            var currentAddress = startingAddress;
+		    for (int row = 0; row < 16; row++)
 		    {
-		    	builder.Append("$" + nAddr.ToString("X4") + ":");
+		    	builder.Append("$" + currentAddress.ToString("X4") + ":");
 		    	for (int col = 0; col < 16; col++)
 		    	{
-		    		builder.Append(" " + _nes.CpuBus.ReadByte(nAddr).ToString("X2"));
-		    		nAddr += 1;
+		    		builder.Append(" " + _nes.CpuBus.ReadByte(currentAddress).ToString("X2"));
+		    		currentAddress += 1;
 		    	}
                 builder.AppendLine();
 		    }
@@ -220,7 +227,8 @@ namespace NesEmu.Avalonia.ViewModels
 
             //It's 3am fuck off with your judgement
             var newList = new List<(ushort key, string value, bool isActive, string displayValue)>();
-            foreach(var code in DisassembledCode)
+            var currentInstructionIndex = DisassembledCode.FindIndex(x => x.key == _nes.Processor.Registers.ProgramCounter);
+            foreach(var code in DisassembledCode.Skip(currentInstructionIndex + 1).Take(10))
             {
                 (ushort key, string value, bool isActive, string displayValue) newCode;
 
@@ -237,40 +245,16 @@ namespace NesEmu.Avalonia.ViewModels
 
         private void LoadExampleProgram()
         {
-            //The following program multiplies 3 by 10
-            /*
-                *=$8000
-                LDX #10
-                STX $0000
-                LDX #3
-                STX $0001
-                LDY $0000
-                LDA #0
-                CLC
-                loop
-                ADC $0001
-                DEY
-                BNE loop
-                STA $0002
-                NOP
-                NOP
-                NOP
-		    */
-            byte[] program = new byte[] {0xA2, 0x0A, 0x8E, 0x00, 0x00, 0xA2, 0x03, 0x8E, 0x01, 0x00, 0xAC, 0x00, 0x00, 0xA9, 0x00, 0x18, 0x6D, 0x01, 0x00, 0x88, 0xD0, 0xFA, 0x8D, 0x02, 0x00, 0xEA, 0xEA, 0xEA};
-            ushort offset = 0x8000;
+            _nes.LoadCartridge("C:\\Dev\\NesEmu\\TestRoms\\nestest.nes");
 
-            foreach(var b in program)
-            {
-                _nes.CpuBus.Write(offset++, b);
-            }
-
+            //Write initial program counter
+		    _nes.CpuBus.Write(0xFFFD, 0xC0);
             _nes.CpuBus.Write(0xFFFC, 0x00);
-		    _nes.CpuBus.Write(0xFFFD, 0x80);
 
             _nes.Processor.Reset();
 
             var disassembledValues = _nes.Processor.GetDisassembly(0x0000, 0xFFFF);
-            
+
             foreach(var disassembledValue in disassembledValues)
             {
                 DisassembledCode.Add((disassembledValue.Key, disassembledValue.Value, disassembledValue.Key == _cpuRegisters.ProgramCounter, disassembledValue.Key.ToString("X2")));

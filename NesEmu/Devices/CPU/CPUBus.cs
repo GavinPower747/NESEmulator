@@ -1,4 +1,5 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using NesEmu.Core;
 
 namespace NesEmu.Devices.CPU
@@ -6,32 +7,35 @@ namespace NesEmu.Devices.CPU
     public class CPUBus : IBus
     {
         private CPU _cpu;
-        private IDevice[] _connectedDevices;
-        private byte[] _ram; //Test Purposes please delete after use. Write some actual devices
+        private List<IAddressableDevice> _connectedDevices;
 
         public CPUBus(CPU cpu)
         {
             _cpu = cpu;
-            _connectedDevices = Array.Empty<IDevice>();
+            _connectedDevices = new List<IAddressableDevice>();
             _cpu.ConnectBus(this);
-
-            _ram = new byte[64 * 1024]; //64kb of RAM
         }
 
         public byte ReadByte(ushort address)
         {
-            if(address >= 0x0000 && address <= 0xFFFF)
-                return _ram[address];
+            var device = _connectedDevices.FirstOrDefault(x => x.AddressableRange.ContainsAddress(address));
+
+            if(device is not null)
+            {
+                return device.Read(address);
+            }
 
             return 0;
         }
 
         public ushort ReadWord(ushort address)
         {
-            if(address >= 0x0000 && address <= 0xFFFF)
+            var device = _connectedDevices.FirstOrDefault(x => x.AddressableRange.ContainsAddress(address));
+
+            if(device is not null)
             {
-                var lo = (ushort)_ram[address];
-                var hi = (ushort)_ram[address + 1];
+                var lo = (ushort)device.Read(address);
+                var hi = (ushort)device.Read((ushort)(address + 1));
 
                 return (ushort)(hi << 8 | lo);
             }
@@ -41,8 +45,18 @@ namespace NesEmu.Devices.CPU
 
         public void Write(ushort address, byte data)
         {
-            if(address >= 0x0000 && address <= 0xFFFF)
-                 _ram[address] = data;
+            var device = _connectedDevices.FirstOrDefault(x => x.AddressableRange.ContainsAddress(address));
+
+            if(device is not null)
+            {
+                device.Write(address, data);
+            }
+        }
+
+        public void ConnectDevice(IAddressableDevice device)
+        {
+            //Do validation to make sure that ranges aren't overlapping
+            _connectedDevices.Add(device);
         }
     }
 }
