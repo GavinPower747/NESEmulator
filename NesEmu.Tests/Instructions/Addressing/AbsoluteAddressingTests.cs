@@ -1,7 +1,6 @@
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using NUnit;
 using NUnit.Framework;
 using Moq;
 
@@ -28,12 +27,30 @@ namespace NesEmu.Tests.Instructions.Addressing
 
             byte expectedAddress = 0x0011;
 
-            _bus.Setup(x => x.ReadByte((byte)(registers.ProgramCounter))).Returns(expectedAddress);
+            _bus.Setup(x => x.ReadWord((byte)(registers.ProgramCounter))).Returns(expectedAddress);
 
             var addressInfo = strat.GetOperationAddress(registers, _bus.Object);
 
             Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
             Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void AbsoluteAddressing_Increments_ProgramCounter_ByTwo()
+        {
+            var strat = new AbsoluteAddressing();
+            var registers = new CPURegisters();
+            ushort initialProgramCounter = 0x00;
+
+            registers.ProgramCounter = initialProgramCounter;
+
+            ushort expectedAddress = 0x0011;
+
+            _bus.Setup(x => x.ReadWord((byte)(registers.ProgramCounter))).Returns(expectedAddress);
+
+            var addressInfo = strat.GetOperationAddress(registers, _bus.Object);
+
+            Assert.That(registers.ProgramCounter, Is.EqualTo(initialProgramCounter + 2));
         }
     }
 }

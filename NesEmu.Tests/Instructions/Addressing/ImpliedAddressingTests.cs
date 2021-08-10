@@ -1,8 +1,5 @@
-using NesEmu.Core;
-using NesEmu.Extensions;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using NUnit;
 using NUnit.Framework;
 
 namespace NesEmu.Tests.Instructions.Addressing
@@ -35,7 +32,7 @@ namespace NesEmu.Tests.Instructions.Addressing
         }
 
         [Test]
-        public void ImpliedAddressing_ShoutNot_ModifyStatus()
+        public void ImpliedAddressing_ShouldNot_ModifyStatus()
         {
             var registers = new CPURegisters();
             var status = new StatusRegister(0x00);
@@ -49,6 +46,20 @@ namespace NesEmu.Tests.Instructions.Addressing
             var result = sut.GetOperationAddress(registers, _cpuBus);
 
             Assert.That(registers.StatusRegister, Is.EqualTo(status));
+        }
+
+        [Test]
+        public void ImpliedAddressing_ShouldNot_Modify_ProgramCounter()
+        {
+            var registers = new CPURegisters();
+            ushort initialProgramCounter = 0x00;
+
+            registers.ProgramCounter = initialProgramCounter;
+
+            var sut = new ImpliedAddressing();
+            var result = sut.GetOperationAddress(registers, _cpuBus);
+
+            Assert.That(registers.ProgramCounter, Is.EqualTo(initialProgramCounter));
         }
     }
 }

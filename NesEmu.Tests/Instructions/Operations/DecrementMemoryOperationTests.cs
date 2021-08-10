@@ -1,5 +1,3 @@
-using System.Reflection;
-using NUnit;
 using NUnit.Framework;
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
