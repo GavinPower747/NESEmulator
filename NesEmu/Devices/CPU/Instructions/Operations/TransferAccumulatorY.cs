@@ -13,7 +13,7 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
             registers.Y = registers.Accumulator;
-
+            registers.StatusRegister.Overflow = !registers.StatusRegister.Overflow;
             return 0;
         }
     }

@@ -26,7 +26,7 @@ namespace NesEmu.Tests.Devices
 
             ramData[address] = memoryVal;
 
-            var ram = new RAM();
+            var ram = new Ram();
             SetRamData(ram, ramData);
 
             var data = ram.Read(address);
@@ -37,13 +37,13 @@ namespace NesEmu.Tests.Devices
         [Test]
         public void Read_Returns_Correct_ValueAbove2KB()
         {
-            ushort address = 3000 - 2048;
+            ushort address = 3000;
             byte memoryVal = 0xFF;
             var ramData = new byte[2048];
 
-            ramData[address] = memoryVal;
+            ramData[address - 2048] = memoryVal;
 
-            var ram = new RAM();
+            var ram = new Ram();
             SetRamData(ram, ramData);
 
             var data = ram.Read(address);
@@ -57,7 +57,7 @@ namespace NesEmu.Tests.Devices
             ushort address = 0x0010;
             byte memoryVal = 0xFF;
 
-            var ram = new RAM();
+            var ram = new Ram();
             ram.Write(address, memoryVal);
 
             var data = ram.Read(address);
@@ -71,7 +71,7 @@ namespace NesEmu.Tests.Devices
             ushort address = 3000;
             byte memoryVal = 0xFF;
 
-            var ram = new RAM();
+            var ram = new Ram();
             ram.Write(address, memoryVal);
 
             var data = ram.Read((ushort)(address - 2048));
@@ -79,10 +79,10 @@ namespace NesEmu.Tests.Devices
             Assert.That(data, Is.EqualTo(memoryVal));
         }
 
-        private void SetRamData(RAM ram, byte[] data)
+        private void SetRamData(Ram ram, byte[] data)
         {
             var type = ram.GetType();
-            var field = type.GetField("_ram", BindingFlags.NonPublic | BindingFlags.Instance);
+            var field = type.GetField("_data", BindingFlags.NonPublic | BindingFlags.Instance);
 
             field.SetValue(ram, data);
         }

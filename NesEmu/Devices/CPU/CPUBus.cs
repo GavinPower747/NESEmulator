@@ -4,12 +4,12 @@ using NesEmu.Core;
 
 namespace NesEmu.Devices.CPU
 {
-    public class CPUBus : IBus
+    internal class CPUBus : IBus
     {
         private CPU _cpu;
         private List<IAddressableDevice> _connectedDevices;
 
-        public CPUBus(CPU cpu)
+        internal CPUBus(CPU cpu)
         {
             _cpu = cpu;
             _connectedDevices = new List<IAddressableDevice>();
@@ -55,7 +55,7 @@ namespace NesEmu.Devices.CPU
 
         public void ConnectDevice(IAddressableDevice device)
         {
-            //Do validation to make sure that ranges aren't overlapping
+            //TODO: Validate devices to make sure ranges aren't overlapping
             _connectedDevices.Add(device);
         }
     }

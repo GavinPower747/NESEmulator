@@ -40,7 +40,7 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
             registers.StatusRegister.Carry = origVal.GetBitValue(0);
             registers.StatusRegister.SetZeroAndNegative(shiftedVal);
 
-            bus.Write(address, shiftedVal);
+            registers.Accumulator = shiftedVal;
 
             return 0;
         }

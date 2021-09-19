@@ -7,9 +7,12 @@ namespace NesEmu.Console
     {
         static void Main(string[] args)
         {
+            System.Console.WriteLine("Running...");
             var console = new NintendoEntertainmentSystem();
 
-            console.LoadCartridge("D:\\Dev\\NesEmulator\\TestRoms\\official.nes");
+            console.LoadCartridge("D:\\Dev\\NesEmulator\\TestRoms\\nestest.nes");
+
+            console.Disassembler.GetCPUDisassembly(0x0000, 0xFFFF);
         }
     }
 }

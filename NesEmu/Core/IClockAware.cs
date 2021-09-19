@@ -1,6 +1,6 @@
 namespace NesEmu.Core
 {
-    public interface IClockAware
+    internal interface IClockAware
     {
         void Tick();
         void Reset();

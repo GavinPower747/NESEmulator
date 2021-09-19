@@ -113,11 +113,15 @@ namespace NesEmu.Avalonia.ViewModels
         private string _yRegister;
         private string _memoryString;
         private List<(ushort key, string value, bool isActive, string displayValue)> _disassembledCode;
+        private List<(ushort key, string value, bool isActive, string displayValue)> _allDisassembledCode;
+        private Stack<ushort> _previousLocations;
+        private Dictionary<ushort, byte> _watchedAddresses;
+        private bool _watchedValueChanged;
 
         public MainWindowViewModel(NintendoEntertainmentSystem nes)
         {
             _nes = nes ?? throw new ArgumentNullException("nes");
-            _cpuRegisters = _nes.Processor.Registers;
+            _cpuRegisters = _nes.Disassembler.GetCpuRegisterStatus();
 
             //Declare them all here in the 
             //constructor so the compiler stops talking shit
@@ -135,28 +139,31 @@ namespace NesEmu.Avalonia.ViewModels
             _yRegister = string.Empty;
             _memoryString = string.Empty;
             _disassembledCode = new List<(ushort, string value, bool isActive, string displayValue)>();
+            _allDisassembledCode = new List<(ushort, string value, bool isActive, string displayValue)>();
+            _previousLocations = new Stack<ushort>();
+            _watchedAddresses = new Dictionary<ushort, byte>() 
+            {
+                {0xCEFD, 0x00}
+            };
+            _watchedValueChanged = false;
 
-            LoadExampleProgram();
-            UpdateMemory();
             UpdateRegisters();
         }
 
-        public void StepCPU()
+        public void StepBack()
         {
-            do
+            if(_previousLocations.Count > 0)
             {
-                _nes.Processor.Tick();
-            } while(!_nes.Processor.OpComplete());
+                _nes.Disassembler.GetCpuRegisterStatus().ProgramCounter = _previousLocations.Pop();
 
-            UpdateMemory();
-            UpdateRegisters();
+                UpdateRegisters();
+            }
         }
 
         public void ResetConsole()
         {
             _nes.Reset();
 
-            UpdateMemory();
             UpdateRegisters();
         }
 
@@ -164,7 +171,6 @@ namespace NesEmu.Avalonia.ViewModels
         {
             _nes.Interrupt();
 
-            UpdateMemory();
             UpdateRegisters();
         }
 
@@ -172,44 +178,12 @@ namespace NesEmu.Avalonia.ViewModels
         {
             _nes.NonMaskableInterrupt();
 
-            UpdateMemory();
             UpdateRegisters();
-        }
-
-        private void UpdateMemory()
-        {
-            var zeroPage = GetRamPage(0x0000); //Data
-            var secondPage = GetRamPage(0x0200); //Results
-            var thirdPage = GetRamPage(0x0300); //Results
-            var instructions = GetRamPage(0x8000);
-            MemoryString = zeroPage + Environment.NewLine 
-                + secondPage + Environment.NewLine 
-                + thirdPage + Environment.NewLine 
-                + instructions;
-        }
-
-        private string GetRamPage(ushort startingAddress)
-        {
-            var builder = new StringBuilder();
-
-            var currentAddress = startingAddress;
-		    for (int row = 0; row < 16; row++)
-		    {
-		    	builder.Append("$" + currentAddress.ToString("X4") + ":");
-		    	for (int col = 0; col < 16; col++)
-		    	{
-		    		builder.Append(" " + _nes.CpuBus.ReadByte(currentAddress).ToString("X2"));
-		    		currentAddress += 1;
-		    	}
-                builder.AppendLine();
-		    }
-
-            return builder.ToString();
         }
         
         private void UpdateRegisters()
         {
-            _cpuRegisters = _nes.Processor.Registers;
+            _cpuRegisters = _nes.Disassembler.GetCpuRegisterStatus();
 
             CarryColour = _cpuRegisters.StatusRegister.Carry ? Brushes.Green : Brushes.Red;
             ZeroColour = _cpuRegisters.StatusRegister.Zero ? Brushes.Green : Brushes.Red;
@@ -227,38 +201,17 @@ namespace NesEmu.Avalonia.ViewModels
 
             //It's 3am fuck off with your judgement
             var newList = new List<(ushort key, string value, bool isActive, string displayValue)>();
-            var currentInstructionIndex = DisassembledCode.FindIndex(x => x.key == _nes.Processor.Registers.ProgramCounter);
-            foreach(var code in DisassembledCode.Skip(currentInstructionIndex + 1).Take(10))
+            var currentInstructionIndex = _allDisassembledCode.FindIndex(x => x.key == _nes.Disassembler.GetCpuRegisterStatus().ProgramCounter);
+            foreach(var code in _allDisassembledCode.Skip(currentInstructionIndex - 1).Take(10))
             {
                 (ushort key, string value, bool isActive, string displayValue) newCode;
 
-                if(code.key == _cpuRegisters.ProgramCounter)
-                    newCode = (code.key, code.value, true, code.key.ToString("X2"));
-                else
-                    newCode = (code.key, code.value, false, code.key.ToString("X2"));
-
+                newCode = (code.key, code.value, code.key == _cpuRegisters.ProgramCounter, code.key.ToString("X2"));
+                
                 newList.Add(newCode);
             }
 
             DisassembledCode = newList;
-        }
-
-        private void LoadExampleProgram()
-        {
-            _nes.LoadCartridge("C:\\Dev\\NesEmu\\TestRoms\\nestest.nes");
-
-            //Write initial program counter
-		    _nes.CpuBus.Write(0xFFFD, 0xC0);
-            _nes.CpuBus.Write(0xFFFC, 0x00);
-
-            _nes.Processor.Reset();
-
-            var disassembledValues = _nes.Processor.GetDisassembly(0x0000, 0xFFFF);
-
-            foreach(var disassembledValue in disassembledValues)
-            {
-                DisassembledCode.Add((disassembledValue.Key, disassembledValue.Value, disassembledValue.Key == _cpuRegisters.ProgramCounter, disassembledValue.Key.ToString("X2")));
-            }
         }
     }
 }

@@ -8,6 +8,7 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing
         public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
         {
             var arg = bus.ReadByte(registers.ProgramCounter);
+            registers.ProgramCounter++;
 
             ushort lowAddress = (ushort)(arg + registers.X);
             lowAddress &= 0x00FF;

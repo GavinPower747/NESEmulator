@@ -42,7 +42,9 @@ namespace NesEmu.Devices.Cartridge
                 int mapperIdHi = control2 >> 4;
                 var mapperId = (byte)((mapperIdHi << 4) | mapperIdLo);
 
-                var programData = reader.ReadBytes(programBankCount * 0x4000);
+                reader.ReadBytes(16);
+
+                var programData = reader.ReadBytes(1 * 0x4000);
                 _programBody.AddRange(programData);
 
                 _characterRom = characterBankCount > 0 

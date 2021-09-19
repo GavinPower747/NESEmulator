@@ -12,9 +12,7 @@ namespace NesEmu.Devices.CPU.Instructions.Operations
 
         public int Operate(ushort address, CPURegisters registers, IBus bus)
         {
-            var jumpLocation = bus.ReadByte(address);
-
-            registers.ProgramCounter = jumpLocation;
+            registers.ProgramCounter = address;
 
             return 0;
         }
