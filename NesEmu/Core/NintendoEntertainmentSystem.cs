@@ -1,6 +1,7 @@
 using NesEmu.Devices;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.Cartridge;
+using NesEmu.Devices.PPU;
 
 namespace NesEmu.Core
 {
@@ -11,6 +12,7 @@ namespace NesEmu.Core
     public class NintendoEntertainmentSystem
     {
         public readonly Disassembler Disassembler;
+        public readonly PPU PPU;
         private readonly CPU _processor;
         private readonly CPUBus _cpuBus;
         private readonly Ram _ram;
@@ -20,6 +22,7 @@ namespace NesEmu.Core
         {
             _processor = new CPU();
             _cpuBus = new CPUBus(_processor);
+            PPU = new PPU();
             Disassembler = new Disassembler(_cpuBus, _processor);
             _ram = new Ram();
 

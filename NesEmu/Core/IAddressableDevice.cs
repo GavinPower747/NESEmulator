@@ -1,7 +1,7 @@
 namespace NesEmu.Core
 {
-    public interface IAddressableDevice : IDevice
+    public interface IAddressableDevice
     {
-        AddressableRange AddressableRange { get; }
+        
     }
 }

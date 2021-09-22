@@ -2,15 +2,16 @@ namespace NesEmu.Devices.Cartridge
 {
     public abstract class Mapper
     {
-        protected readonly int _programBanks;
-        protected readonly int _characterBanks;
+        protected readonly int ProgramBanks;
+        protected readonly int CharacterBanks;
 
         public Mapper(int programBanks, int characterBanks)
         {
-            _programBanks = programBanks;
-            _characterBanks = characterBanks;
+            ProgramBanks = programBanks;
+            CharacterBanks = characterBanks;
         }
 
-        protected abstract ushort GetMappedAddress(ushort suppliedAddress);
+        protected abstract ushort GetCpuMappedAddress(ushort suppliedAddress);
+        protected abstract ushort GetPPUMappedAddress(ushort suppliedAddress);
     }
 }

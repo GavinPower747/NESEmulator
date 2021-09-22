@@ -5,11 +5,16 @@ namespace NesEmu.Devices.Cartridge
         public NROMMapper(int programBanks, int characterBanks) : base(programBanks, characterBanks)
         { }
 
-        protected override ushort GetMappedAddress(ushort suppliedAddress)
+        protected override ushort GetCpuMappedAddress(ushort suppliedAddress)
         {
-            var mirrorValue = _programBanks > 1 ? 0x7FFF : 0x3FFF;
+            var mirrorValue = ProgramBanks > 1 ? 0x7FFF : 0x3FFF;
 
             return (ushort)(suppliedAddress & mirrorValue);
+        }
+
+        protected override ushort GetPPUMappedAddress(ushort suppliedAddress)
+        {
+            return suppliedAddress;
         }
     }
 }

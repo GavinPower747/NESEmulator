@@ -29,7 +29,7 @@ namespace NesEmu.Tests.Devices
             var ram = new Ram();
             SetRamData(ram, ramData);
 
-            var data = ram.Read(address);
+            var data = ram.ReadCpu(address);
 
             Assert.That(data, Is.EqualTo(memoryVal));
         }
@@ -46,7 +46,7 @@ namespace NesEmu.Tests.Devices
             var ram = new Ram();
             SetRamData(ram, ramData);
 
-            var data = ram.Read(address);
+            var data = ram.ReadCpu(address);
 
             Assert.That(data, Is.EqualTo(memoryVal));
         }
@@ -58,9 +58,9 @@ namespace NesEmu.Tests.Devices
             byte memoryVal = 0xFF;
 
             var ram = new Ram();
-            ram.Write(address, memoryVal);
+            ram.WriteCpu(address, memoryVal);
 
-            var data = ram.Read(address);
+            var data = ram.ReadCpu(address);
 
             Assert.That(data, Is.EqualTo(memoryVal));
         }
@@ -72,9 +72,9 @@ namespace NesEmu.Tests.Devices
             byte memoryVal = 0xFF;
 
             var ram = new Ram();
-            ram.Write(address, memoryVal);
+            ram.WriteCpu(address, memoryVal);
 
-            var data = ram.Read((ushort)(address - 2048));
+            var data = ram.ReadCpu((ushort)(address - 2048));
 
             Assert.That(data, Is.EqualTo(memoryVal));
         }

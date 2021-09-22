@@ -1,16 +1,19 @@
 using NesEmu.Core;
+using System;
 using System.IO;
 using System.Collections.Generic;
 
 namespace NesEmu.Devices.Cartridge
 {
-    public class Cartridge : IAddressableDevice
+    public class Cartridge : ICPUAddressableDevice, IPPUAddressableDevice
     {
-        public AddressableRange AddressableRange { get; }
+        public AddressableRange CpuRange { get; }
+        public AddressableRange PPURange { get; }
 
-        public List<byte> _programBody;
+        private List<byte> _programBody;
         private byte[] _characterRom;
         private string _pathToRom;
+        private Mapper _mapper;
 
         public Cartridge(string path)
         {
@@ -50,15 +53,36 @@ namespace NesEmu.Devices.Cartridge
                 _characterRom = characterBankCount > 0 
                     ? reader.ReadBytes(characterBankCount * 0x2000) 
                     : new byte[0x2000];
+
+                _mapper = GetMapper(mapperId, characterBankCount, programBankCount);
             }
         }
 
-        public byte Read(ushort address)
+        private Mapper GetMapper(int mapperId, int characterBankCount, int programBankCount)
+        {
+            switch(mapperId)
+            {
+                case 0: return new NROMMapper(programBankCount, characterBankCount);
+                default: throw new ArgumentException($"Could not find mapper for Id: {mapperId}");
+            }
+        }
+
+        public byte ReadCpu(ushort address)
         {
             return 0;
         }
 
-        public void Write(ushort address, byte data)
+        public void WriteCpu(ushort address, byte data)
+        {
+
+        }
+
+        public byte ReadPPU(ushort address)
+        {
+            return 0;
+        }
+
+        public void WritePPU(ushort address, byte data)
         {
 
         }

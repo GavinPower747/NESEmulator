@@ -6,56 +6,14 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="NesEmu.Avalonia.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="NesEmu.Avalonia">
+        Title="NesEmu.Avalonia"
+        xmlns:gsc="clr-namespace:NesEmu.Avalonia.Controls;assembly=NesEmu.Avalonia">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Border>
-        <Grid RowDefinitions="*, 3*" ColumnDefinitions="2*, *">
-                <ScrollViewer Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto" AllowAutoHide="True">
-                    <TextBlock TextWrapping="Wrap" Margin="5" Text="{Binding MemoryString}" />
-                </ScrollViewer>
-
-            <StackPanel Grid.Column="1" Grid.Row="0">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="20" Foreground="{Binding CarryColour}">C</TextBlock>
-                    <TextBlock Margin="20" Foreground="{Binding ZeroColour}">Z</TextBlock>
-                    <TextBlock Margin="20" Foreground="{Binding InterruptColour}">I</TextBlock>
-                    <TextBlock Margin="20" Foreground="{Binding DecimalColour}">D</TextBlock>
-                    <TextBlock Margin="20" Foreground="{Binding BreakColour}">B</TextBlock>
-                    <TextBlock Margin="20" Foreground="{Binding OverflowColour}">O</TextBlock>
-                    <TextBlock Margin="20" Foreground="{Binding NegativeColour}">N</TextBlock>
-                </StackPanel>
-                <TextBlock Text="{Binding Accumulator}"/>
-                <TextBlock Text="{Binding StackPointer}"/>
-                <TextBlock Text="{Binding ProgramCounter}"/>
-                <TextBlock Text="{Binding XRegister}" />
-                <TextBlock Text="{Binding YRegister}" />
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" AllowAutoHide="True">
-                    <ItemsRepeater Items="{Binding DisassembledCode}">
-                        <ItemsRepeater.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock IsVisible="{Binding [2]}" Text=">" Margin="5, 0"/>
-                                    <TextBlock Text="{Binding [3]}" Margin="5,0"/>
-                                    <TextBlock Text="{Binding [1]}" Margin="5,0"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsRepeater.ItemTemplate>
-                    </ItemsRepeater>
-                </ScrollViewer>
-                <Button Command="{Binding StepCPU}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step CPU</Button>
-                <Button Command="{Binding StepBack}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step Back</Button>
-                <Button Command="{Binding PlayUntilZero}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Step Until Zero</Button>
-                <Button Command="{Binding ResetConsole}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Reset</Button>
-                <Button Command="{Binding PerformInterrupt}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Interrupt</Button>
-                <Button Command="{Binding NonMaskableInterrupt}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">Non Maskable Interrupt</Button>
-            </StackPanel>
-        </Grid>
-    </Border>
+    <StackPanel HorizontalAlignment="Stretch"> 
+        <gsc:GameScreenControl Source="{ Binding Screen }"/>
+    </StackPanel>
 </Window>
