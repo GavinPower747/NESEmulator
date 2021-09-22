@@ -25,7 +25,7 @@ namespace NesEmu.Avalonia.ViewModels
             _nes = nes ?? throw new ArgumentNullException("nes");
             _nes.PPU.FrameReady += OnFrameReady;
 
-            _screen = new WriteableBitmap(new PixelSize(256, 240), new Vector(1920, 1080), PixelFormat.Bgra8888, AlphaFormat.Unpremul);
+            _screen = new WriteableBitmap(new PixelSize(256, 240), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Unpremul);
 
             this.RaisePropertyChanged(nameof(Screen));
 

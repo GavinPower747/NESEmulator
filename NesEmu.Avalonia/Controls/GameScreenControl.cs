@@ -1,13 +1,9 @@
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Media.Immutable;
 using Avalonia.Metadata;
-using Avalonia.Platform;
 using Avalonia.Threading;
 
 namespace NesEmu.Avalonia.Controls
@@ -40,9 +36,7 @@ namespace NesEmu.Avalonia.Controls
         {
             base.Render(context);
 
-            context.DrawImage(Source,
-                new Rect(0, 0, 640, 480),
-                new Rect(256, 0, 640, 480));
+            context.DrawImage(Source, new Rect(new Size(1920, 1080)));
 
             Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Background);
         }

@@ -3,15 +3,23 @@ using System;
 
 namespace NesEmu.Devices.PPU
 {
-    public class PPU : IClockAware
+    ///<summary>
+    ///The Picture Processing Unit, think of it as a primitive graphics card
+    ///</summary>
+    public class PPU : IClockAware, ICPUAddressableDevice
     {
-        const int ScreenHeight = 240;
-        const int ScreenWidth = 256;
-        private byte[] _frameData;
-        private int _cycles;
-        private int _scanline;
-        public delegate void SendFrame(byte[] frameData);
         public event SendFrame FrameReady;
+        public delegate void SendFrame(byte[] frameData);
+        public AddressableRange CpuRange => new AddressableRange(0x2000, 0x3FFF);
+
+        //The nes will at any one time contain 341 cycles in a frame,
+        //a cycle is roughly equivalent to a single pixel on a screen.
+        //So we have a 256 wide image with 85 pixels of Overscan
+        const int TotalCycles = 341;
+        const int TotalScanlines = 261;
+        private byte[] _frameData;
+        private int _currentCycle;
+        private int _currentScanline;
 
         private static readonly byte[] _pallet =
 		{
@@ -29,9 +37,14 @@ namespace NesEmu.Devices.PPU
 			0xab, 0xb3, 0xf3, 0xcc, 0xb5, 0xeb, 0xf2, 0xb8, 0xb8, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 		};
 
-        public PPU()
+        
+
+        private readonly PPUBus _bus;
+
+        public PPU(PPUBus bus)
         {
-            _frameData = new byte[ScreenWidth * ScreenHeight];
+            _frameData = new byte[TotalCycles * TotalScanlines];
+            _bus = bus;
         }
 
         public void Reset()
@@ -43,14 +56,77 @@ namespace NesEmu.Devices.PPU
         {
             var random = new Random();
             var colour = _pallet[random.Next(0, _pallet.Length)];
-            _frameData[_cycles] = colour;
+            _frameData[_currentCycle * _currentScanline] = colour;
 
-            _cycles++;
+            _currentCycle++;
 
-            if(_cycles == (ScreenWidth * ScreenHeight) - 1)
+            if(_currentCycle >= TotalCycles)
             {
-                _cycles = 0;
-                FrameReady?.Invoke(_frameData);
+                _currentCycle = 0;
+                _currentScanline++;
+
+                if(_currentScanline >= TotalScanlines)
+                {
+                    _currentScanline = 0;
+                    FrameReady?.Invoke(_frameData);
+                }
+            }
+        }
+
+        public void GetPatternTable()
+        {
+            for(int y = 0; y < 16; y++)
+            for(int x = 0; x < 16; x++)
+            {
+                ushort byteOffset = (ushort)(y * 256 + x * 16);
+                for(int row = 0; row < 8; row++)
+                {
+                    byte tileLo = _bus.ReadByte(i * 0x1000 + byteOffset + row);
+                    byte tileHi = _bus.ReadByte(i * 0x1000 + byteOffset + row + 8);
+
+                    for(int col = 0; col < 8; col++)
+                    {
+                        byte pixel = (byte)((tileLo & 0x01) + (tileHi & 0x01));
+                        tileLo >>= 1;
+                        tileHi >>= 1;
+                    }
+                }
+            }
+        }
+
+        public byte ReadCpu(ushort address)
+        {
+            var mirroredAddress = address & 0x0007;
+            
+            switch(mirroredAddress)
+            {
+                case 0x0000: break;
+                case 0x0001: break;
+                case 0x0002: break;
+                case 0x0003: break;
+                case 0x0004: break;
+                case 0x0005: break;
+                case 0x0006: break;
+                case 0x0007: break;
+            }
+
+            return 0;
+        }
+
+        public void WriteCpu(ushort address, byte data)
+        {
+            var mirroredAddress = address & 0x0007;
+            
+            switch(mirroredAddress)
+            {
+                case 0x0000: break;
+                case 0x0001: break;
+                case 0x0002: break;
+                case 0x0003: break;
+                case 0x0004: break;
+                case 0x0005: break;
+                case 0x0006: break;
+                case 0x0007: break;
             }
         }
     }

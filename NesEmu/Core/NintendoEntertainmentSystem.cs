@@ -15,6 +15,7 @@ namespace NesEmu.Core
         public readonly PPU PPU;
         private readonly CPU _processor;
         private readonly CPUBus _cpuBus;
+        private readonly PPUBus _ppuBus;
         private readonly Ram _ram;
         private Cartridge _cartridge;
 
@@ -22,11 +23,13 @@ namespace NesEmu.Core
         {
             _processor = new CPU();
             _cpuBus = new CPUBus(_processor);
-            PPU = new PPU();
-            Disassembler = new Disassembler(_cpuBus, _processor);
+            _ppuBus = new PPUBus();
+            PPU = new PPU(_ppuBus);
             _ram = new Ram();
+            Disassembler = new Disassembler(_cpuBus, _processor);
 
             _cpuBus.ConnectDevice(_ram);
+            _cpuBus.ConnectDevice(PPU);
         }
 
         public void Reset()
