@@ -79,10 +79,10 @@ namespace NesEmu.Devices.PPU
             for(int x = 0; x < 16; x++)
             {
                 ushort byteOffset = (ushort)(y * 256 + x * 16);
-                for(int row = 0; row < 8; row++)
+                for(ushort row = 0; row < 8; row++)
                 {
-                    byte tileLo = _bus.ReadByte(i * 0x1000 + byteOffset + row);
-                    byte tileHi = _bus.ReadByte(i * 0x1000 + byteOffset + row + 8);
+                    byte tileLo = _bus.ReadByte((ushort)(0 * 0x1000 + byteOffset + row));
+                    byte tileHi = _bus.ReadByte((ushort)(0 * 0x1000 + byteOffset + row + 8));
 
                     for(int col = 0; col < 8; col++)
                     {
