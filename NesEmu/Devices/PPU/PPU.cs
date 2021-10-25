@@ -17,9 +17,13 @@ namespace NesEmu.Devices.PPU
         //So we have a 256 wide image with 85 pixels of Overscan
         const int TotalCycles = 341;
         const int TotalScanlines = 261;
-        private byte[] _frameData;
+        private readonly byte[] _frameData;
+        private readonly byte[] _vram;
         private int _currentCycle;
         private int _currentScanline;
+        private PPUControlRegister _controlReg;
+        private PPUMaskRegister _maskReg;
+        private PPUStatusRegister _statusReg;
 
         private static readonly byte[] _pallet =
 		{
@@ -37,14 +41,16 @@ namespace NesEmu.Devices.PPU
 			0xab, 0xb3, 0xf3, 0xcc, 0xb5, 0xeb, 0xf2, 0xb8, 0xb8, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 		};
 
-        
-
         private readonly PPUBus _bus;
 
         public PPU(PPUBus bus)
         {
             _frameData = new byte[TotalCycles * TotalScanlines];
+            _vram = new byte[0x2000];
             _bus = bus;
+            _controlReg = new PPUControlRegister(0x00);
+            _maskReg = new PPUMaskRegister(0x00);
+            _statusReg = new PPUStatusRegister(0x00);
         }
 
         public void Reset()
@@ -72,37 +78,19 @@ namespace NesEmu.Devices.PPU
                 }
             }
         }
-
-        public void GetPatternTable()
-        {
-            for(int y = 0; y < 16; y++)
-            for(int x = 0; x < 16; x++)
-            {
-                ushort byteOffset = (ushort)(y * 256 + x * 16);
-                for(ushort row = 0; row < 8; row++)
-                {
-                    byte tileLo = _bus.ReadByte((ushort)(0 * 0x1000 + byteOffset + row));
-                    byte tileHi = _bus.ReadByte((ushort)(0 * 0x1000 + byteOffset + row + 8));
-
-                    for(int col = 0; col < 8; col++)
-                    {
-                        byte pixel = (byte)((tileLo & 0x01) + (tileHi & 0x01));
-                        tileLo >>= 1;
-                        tileHi >>= 1;
-                    }
-                }
-            }
-        }
-
+        
         public byte ReadCpu(ushort address)
         {
             var mirroredAddress = address & 0x0007;
             
             switch(mirroredAddress)
             {
-                case 0x0000: break;
-                case 0x0001: break;
-                case 0x0002: break;
+                case 0x0000: 
+                    return _controlReg;
+                case 0x0001: 
+                    return _maskReg;
+                case 0x0002: 
+                    return _statusReg;
                 case 0x0003: break;
                 case 0x0004: break;
                 case 0x0005: break;
@@ -119,8 +107,12 @@ namespace NesEmu.Devices.PPU
             
             switch(mirroredAddress)
             {
-                case 0x0000: break;
-                case 0x0001: break;
+                case 0x0000: 
+                    _controlReg = data;
+                    break;
+                case 0x0001:
+                    _maskReg = data; 
+                    break;
                 case 0x0002: break;
                 case 0x0003: break;
                 case 0x0004: break;

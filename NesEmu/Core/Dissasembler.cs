@@ -11,12 +11,14 @@ namespace NesEmu.Core
     ///</summary>
     public class Disassembler
     {
-        private IBus _bus;
+        private IBus _cpuBus;
+        private IBus _ppuBus;
         private CPU _cpu;
 
-        internal Disassembler(IBus cpuBus, CPU cpu)
+        internal Disassembler(IBus cpuBus, IBus ppuBus, CPU cpu)
         {
-            _bus = cpuBus;
+            _cpuBus = cpuBus;
+            _ppuBus = ppuBus;
             _cpu = cpu;
         }
 
@@ -30,7 +32,7 @@ namespace NesEmu.Core
             while(address < end)
             {
                 Instruction instruction = null;
-                var opcode = _bus.ReadByte(address);
+                var opcode = _cpuBus.ReadByte(address);
                 var lineAddress = address;
                 var lineString = string.Empty;
 
@@ -50,7 +52,7 @@ namespace NesEmu.Core
                         break;
                     case ImmediateAddressing _:
                         {
-                            var value = _bus.ReadByte(address);
+                            var value = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "#$" + value.ToString("X2") + " {IMM}";
                             break;
@@ -58,7 +60,7 @@ namespace NesEmu.Core
 
                     case ZeroPageAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + lo.ToString("X2") + " {ZP0}";
                             break;
@@ -66,7 +68,7 @@ namespace NesEmu.Core
 
                     case ZeroPageXOffsetAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + lo.ToString("X2") + ", X {ZPX}";
                             break;
@@ -74,7 +76,7 @@ namespace NesEmu.Core
 
                     case ZeroPageYOffsetAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + lo.ToString("X2") + ", Y {ZPY}";
                             break;
@@ -82,7 +84,7 @@ namespace NesEmu.Core
 
                     case IndirectXAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "($" + lo.ToString("X2") + ", X) {IZX}";
                             break;
@@ -90,7 +92,7 @@ namespace NesEmu.Core
 
                     case IndirectYAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "($" + lo.ToString("X2") + "), Y {IZY}";
                             break;
@@ -98,9 +100,9 @@ namespace NesEmu.Core
 
                     case AbsoluteAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
-                            var hi = _bus.ReadByte(address);
+                            var hi = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + ((ushort)(hi << 8) | lo).ToString("X4") + " {ABS}";
                             break;
@@ -108,9 +110,9 @@ namespace NesEmu.Core
 
                     case AbsoluteXOffsetAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
-                            var hi = _bus.ReadByte(address);
+                            var hi = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + ((ushort)((hi << 8) | lo)).ToString("X4") + ", X {ABX}";
                             break;
@@ -118,9 +120,9 @@ namespace NesEmu.Core
 
                     case AbsoluteYOffsetAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
-                            var hi = _bus.ReadByte(address);
+                            var hi = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + ((ushort)((hi << 8) | lo)).ToString("X4") + ", Y {ABY}";
                             break;
@@ -128,9 +130,9 @@ namespace NesEmu.Core
 
                     case IndirectAddressing _:
                         {
-                            var lo = _bus.ReadByte(address);
+                            var lo = _cpuBus.ReadByte(address);
                             address++;
-                            var hi = _bus.ReadByte(address);
+                            var hi = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "($" + ((ushort)(hi << 8) | lo).ToString("X4") + ") {IND}";
                             break;
@@ -138,7 +140,7 @@ namespace NesEmu.Core
 
                     case RelativeAddressing _:
                         {
-                            var value = _bus.ReadByte(address);
+                            var value = _cpuBus.ReadByte(address);
                             address++;
                             lineString += "$" + value.ToString("X2") + " [$" + ((ushort)address + value).ToString("X4") + "] {REL}";
                             break;
@@ -149,6 +151,27 @@ namespace NesEmu.Core
             }
 
             return values;
+        }
+
+        public void GetPPUPatternTable(int index)
+        {
+            for(int y = 0; y < 16; y++)
+            for(int x = 0; x < 16; x++)
+            {
+                ushort byteOffset = (ushort)(y * 256 + x * 16);
+                for(ushort row = 0; row < 8; row++)
+                {
+                    byte tileLo = _ppuBus.ReadByte((ushort)(index * 0x1000 + byteOffset + row));
+                    byte tileHi = _ppuBus.ReadByte((ushort)(index * 0x1000 + byteOffset + row + 8));
+
+                    for(int col = 0; col < 8; col++)
+                    {
+                        byte pixel = (byte)((tileLo & 0x01) + (tileHi & 0x01));
+                        tileLo >>= 1;
+                        tileHi >>= 1;
+                    }
+                }
+            }
         }
     }
 }

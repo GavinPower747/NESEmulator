@@ -26,7 +26,7 @@ namespace NesEmu.Core
             _ppuBus = new PPUBus();
             PPU = new PPU(_ppuBus);
             _ram = new Ram();
-            Disassembler = new Disassembler(_cpuBus, _processor);
+            Disassembler = new Disassembler(_cpuBus, _ppuBus, _processor);
 
             _cpuBus.ConnectDevice(_ram);
             _cpuBus.ConnectDevice(PPU);
