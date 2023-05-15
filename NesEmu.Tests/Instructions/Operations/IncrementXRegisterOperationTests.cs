@@ -6,55 +6,54 @@ using NUnit;
 using NUnit.Framework;
 using Moq;
 
-namespace NesEmu.Tests.Instructions.Operations
+namespace NesEmu.Tests.Instructions.Operations;
+
+[TestFixture]
+public class IncrementXRegisterOperationTests
 {
-    [TestFixture]
-    public class IncrementXRegisterOperationTests
+    private Mock<IBus> _bus;
+
+    [SetUp]
+    public void Setup()
     {
-        private Mock<IBus> _bus;
+        _bus = new Mock<IBus>();
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _bus = new Mock<IBus>();
-        }        
+    [Test]
+    public void IncrementXRegister_Should_IncrementRegister()
+    {
+        var registers = new CPURegisters();
+        registers.X = (byte)0x02;
 
-        [Test]
-        public void IncrementXRegister_Should_IncrementRegister()
-        {
-            var registers = new CPURegisters();
-            registers.X = (byte)0x02;
+        _bus.Setup(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>())).Verifiable();
 
-            _bus.Setup(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>())).Verifiable();
+        new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
 
-            new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+        _bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never);
+        Assert.That(registers.X, Is.EqualTo(0x02 + 1));
+        Assert.False(registers.StatusRegister.Negative);
+        Assert.False(registers.StatusRegister.Zero);
+    }
 
-            _bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never);
-            Assert.That(registers.X, Is.EqualTo(0x02 + 1));
-            Assert.False(registers.StatusRegister.Negative);
-            Assert.False(registers.StatusRegister.Zero);
-        }
+    [Test]
+    public void IncrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
+    {
+        var registers = new CPURegisters();
+        registers.X = (byte)0xFE;
 
-        [Test]
-        public void IncrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
-        {
-            var registers = new CPURegisters();
-            registers.X = (byte)0xFE;
+        new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
 
-            new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+        Assert.True(registers.StatusRegister.Negative);
+    }
 
-            Assert.True(registers.StatusRegister.Negative);
-        }
+    [Test]
+    public void IncrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
+    {
+        var registers = new CPURegisters();
+        registers.X = (byte)(0xFF);
 
-        [Test]
-        public void IncrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
-        {
-            var registers = new CPURegisters();
-            registers.X = (byte)(0xFF);
+        new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
 
-            new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
-
-            Assert.True(registers.StatusRegister.Zero);
-        }
+        Assert.True(registers.StatusRegister.Zero);
     }
 }

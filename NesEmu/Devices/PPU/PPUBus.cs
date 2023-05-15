@@ -3,48 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using NesEmu.Core;
 
-namespace NesEmu.Devices.PPU
+namespace NesEmu.Devices.PPU;
+
+public class PPUBus : IBus
 {
-    public class PPUBus : IBus
+    private List<IPPUAddressableDevice> _devices;
+
+    public void ConnectDevice(IAddressableDevice device)
     {
-        private List<IPPUAddressableDevice> _devices; 
-
-        public void ConnectDevice(IAddressableDevice device)
+        if (device is IPPUAddressableDevice ppuDevice)
         {
-            if(device is IPPUAddressableDevice ppuDevice)
-            {
-                //TODO: check to make sure not overlapping ... blah.. blah
-                _devices.Add(ppuDevice);
-            }
-            
-            throw new ArgumentException("Trying to connect a non-PPU addressable device to the PPU Bus");
+            //TODO: check to make sure not overlapping ... blah.. blah
+            _devices.Add(ppuDevice);
         }
 
-        public byte ReadByte(ushort address)
-        {
-            var device = _devices.FirstOrDefault(x => x.PPURange.ContainsAddress(address));
+        throw new ArgumentException("Trying to connect a non-PPU addressable device to the PPU Bus");
+    }
 
-            if(device is not null)
-            {
-                return device.ReadPPU(address);
-            }
-            
-            return 0;
+    public byte ReadByte(ushort address)
+    {
+        var device = _devices.FirstOrDefault(x => x.PPURange.ContainsAddress(address));
+
+        if (device is not null)
+        {
+            return device.ReadPPU(address);
         }
 
-        public ushort ReadWord(ushort address)
-        {
-            throw new System.NotImplementedException();
-        }
+        return 0;
+    }
 
-        public void Write(ushort address, byte data)
-        {
-            var device = _devices.FirstOrDefault(x => x.PPURange.ContainsAddress(address));
+    public ushort ReadWord(ushort address)
+    {
+        throw new System.NotImplementedException();
+    }
 
-            if(device is not null)
-            {
-                device.WritePPU(address, data);
-            }
+    public void Write(ushort address, byte data)
+    {
+        var device = _devices.FirstOrDefault(x => x.PPURange.ContainsAddress(address));
+
+        if (device is not null)
+        {
+            device.WritePPU(address, data);
         }
     }
 }

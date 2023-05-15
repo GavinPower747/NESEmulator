@@ -1,9 +1,8 @@
-namespace NesEmu.Core
+namespace NesEmu.Core;
+
+public interface IPPUAddressableDevice : IAddressableDevice
 {
-    public interface IPPUAddressableDevice : IAddressableDevice
-    {
-        AddressableRange PPURange { get; }
-        byte ReadPPU(ushort address);
-        void WritePPU(ushort address, byte data);
-    }
+    AddressableRange PPURange { get; }
+    byte ReadPPU(ushort address);
+    void WritePPU(ushort address, byte data);
 }

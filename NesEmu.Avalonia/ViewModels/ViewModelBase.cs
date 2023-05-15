@@ -1,8 +1,7 @@
 ﻿using ReactiveUI;
 
-namespace NesEmu.Avalonia.ViewModels
+namespace NesEmu.Avalonia.ViewModels;
+
+public class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
-    {
-    }
 }

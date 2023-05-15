@@ -1,15 +1,14 @@
 using NesEmu.Core;
 
-namespace NesEmu.Devices.CPU.Instructions.Addressing
+namespace NesEmu.Devices.CPU.Instructions.Addressing;
+
+///<summary>
+///Instruction requires no additional data.
+///</summary>
+public class ImpliedAddressing : IAddressingStrategy
 {
-    ///<summary>
-    ///Instruction requires no additional data.
-    ///</summary>
-    public class ImpliedAddressing : IAddressingStrategy
+    public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
     {
-        public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
-        {
-            return (registers.ProgramCounter, 0);
-        }
+        return (registers.ProgramCounter, 0);
     }
 }

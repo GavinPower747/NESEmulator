@@ -4,43 +4,42 @@ using NesEmu.Devices.CPU.Instructions.Addressing;
 using NUnit.Framework;
 using Moq;
 
-namespace NesEmu.Tests.Instructions.Addressing
+namespace NesEmu.Tests.Instructions.Addressing;
+
+[TestFixture]
+public class IndirectXAddressingTests
 {
-    [TestFixture]
-    public class IndirectXAddressingTests
+    private Mock<IBus> _cpuBus;
+
+    [SetUp]
+    public void Setup()
     {
-        private Mock<IBus> _cpuBus;
+        _cpuBus = new Mock<IBus>();
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _cpuBus = new Mock<IBus>();
-        }
+    [Test]
+    public void IndirectXAddressing_Returns_CorrectAddress()
+    {
+        var registers = new CPURegisters();
 
-        [Test]
-        public void IndirectXAddressing_Returns_CorrectAddress()
-        {
-            var registers = new CPURegisters();
+        registers.ProgramCounter = 0x00;
+        registers.X = 0x01;
 
-            registers.ProgramCounter = 0x00;
-            registers.X = 0x01;
+        byte arg = 0x01;
+        byte lowData = 0x11;
+        byte hiData = 0x22;
+        ushort expectedLowAddress = (ushort)((arg + 0x01) & 0x00FF);
+        ushort expectedHiAddress = (ushort)((arg + 0x01 + 1) & 0x00FF);
 
-            byte arg = 0x01;
-            byte lowData = 0x11;
-            byte hiData = 0x22;
-            ushort expectedLowAddress = (ushort)((arg + 0x01) & 0x00FF);
-            ushort expectedHiAddress = (ushort)((arg + 0x01 + 1) & 0x00FF);
+        _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
+        _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData);
+        _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData);
 
-            _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
-            _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData);
-            _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData);
+        var expectedAddress = (ushort)((hiData << 8) | lowData);
 
-            var expectedAddress = (ushort)((hiData << 8) | lowData);
+        var addressInfo = new IndirectXAddressing().GetOperationAddress(registers, _cpuBus.Object);
 
-            var addressInfo = new IndirectXAddressing().GetOperationAddress(registers, _cpuBus.Object);
-
-            Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-            Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
-        }
+        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
+        Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
     }
 }

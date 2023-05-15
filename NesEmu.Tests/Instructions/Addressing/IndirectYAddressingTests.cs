@@ -5,73 +5,72 @@ using NUnit;
 using NUnit.Framework;
 using Moq;
 
-namespace NesEmu.Tests.Instructions.Addressing
+namespace NesEmu.Tests.Instructions.Addressing;
+
+[TestFixture]
+public class IndirectYAddressingTests
 {
-    [TestFixture]
-    public class IndirectYAddressingTests
+    private Mock<IBus> _cpuBus;
+
+    [SetUp]
+    public void Setup()
     {
-        private Mock<IBus> _cpuBus;
+        _cpuBus = new Mock<IBus>();
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _cpuBus = new Mock<IBus>();
-        }
+    [Test]
+    public void IndirectYAddressing_Returns_CorrectAddress()
+    {
+        var sut = new IndirectYAddressing();
+        var registers = new CPURegisters();
 
-        [Test]
-        public void IndirectYAddressing_Returns_CorrectAddress()
-        {
-            var sut = new IndirectYAddressing();
-            var registers = new CPURegisters();
+        registers.ProgramCounter = 0x00;
+        registers.Y = 0x01;
 
-            registers.ProgramCounter = 0x00;
-            registers.Y = 0x01;
+        byte arg = 0x01;
+        byte lowData = 0x11;
+        byte hiData = 0x22;
+        ushort expectedLowAddress = (ushort)(arg);
+        ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
 
-            byte arg = 0x01;
-            byte lowData = 0x11;
-            byte hiData = 0x22;
-            ushort expectedLowAddress = (ushort)(arg);
-            ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
+        _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
+        _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
+        _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
 
-            _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
-            _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
-            _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
+        var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
 
-            var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
+        var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
 
-            var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
-
-            Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-            Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
+        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
+        Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
 
 
-        }
+    }
 
-        [Test]
-        public void IndirectYAddressing_Returns_ExtraCycle_When_OffsetGoesToNextPage()
-        {
-            var sut = new IndirectYAddressing();
-            var registers = new CPURegisters();
+    [Test]
+    public void IndirectYAddressing_Returns_ExtraCycle_When_OffsetGoesToNextPage()
+    {
+        var sut = new IndirectYAddressing();
+        var registers = new CPURegisters();
 
-            registers.ProgramCounter = 0x00;
-            registers.Y = 0x01;
+        registers.ProgramCounter = 0x00;
+        registers.Y = 0x01;
 
-            byte arg = 0x01;
-            byte lowData = 0xFF;
-            byte hiData = 0xFF;
-            ushort expectedLowAddress = (ushort)(arg);
-            ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
+        byte arg = 0x01;
+        byte lowData = 0xFF;
+        byte hiData = 0xFF;
+        ushort expectedLowAddress = (ushort)(arg);
+        ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
 
-            _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
-            _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
-            _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
+        _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
+        _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
+        _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
 
-            var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
+        var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
 
-            var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
+        var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
 
-            Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-            Assert.That(addressInfo.extraCycles, Is.EqualTo(1));
-        }
+        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
+        Assert.That(addressInfo.extraCycles, Is.EqualTo(1));
     }
 }

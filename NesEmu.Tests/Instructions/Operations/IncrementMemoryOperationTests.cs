@@ -6,67 +6,66 @@ using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
 using Moq;
 
-namespace NesEmu.Tests.Instructions.Operations
+namespace NesEmu.Tests.Instructions.Operations;
+
+[TestFixture]
+public class IncrementMemoryOperationTests
 {
-    [TestFixture]
-    public class IncrementMemoryOperationTests
+    private Mock<IBus> _bus;
+
+    [SetUp]
+    public void Setup()
     {
-        private Mock<IBus> _bus;
+        _bus = new Mock<IBus>();
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _bus = new Mock<IBus>();
-        }        
+    [Test]
+    public void IncrementMemory_Should_IncrementAtMemoryLocation()
+    {
+        ushort address = 0xFF00;
+        byte data = 0x02;
 
-        [Test]
-        public void IncrementMemory_Should_IncrementAtMemoryLocation()
-        {
-            ushort address = 0xFF00;
-            byte data = 0x02;
-            
-            var registers = new CPURegisters();
+        var registers = new CPURegisters();
 
-            _bus.Setup(x => x.ReadByte(address)).Returns(data);
-            _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+        _bus.Setup(x => x.ReadByte(address)).Returns(data);
+        _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
 
-            new IncrementMemoryOperation().Operate(address, registers, _bus.Object);
+        new IncrementMemoryOperation().Operate(address, registers, _bus.Object);
 
-            _bus.Verify(x => x.Write(address, (byte)(data + 1)), Times.Once);
-            Assert.False(registers.StatusRegister.Negative);
-            Assert.False(registers.StatusRegister.Zero);
-        }
+        _bus.Verify(x => x.Write(address, (byte)(data + 1)), Times.Once);
+        Assert.False(registers.StatusRegister.Negative);
+        Assert.False(registers.StatusRegister.Zero);
+    }
 
-        [Test]
-        public void IncrementMemory_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
-        {
-            ushort address = 0xFF00;
-            byte data = 0xFE;
-            
-            var registers = new CPURegisters();
+    [Test]
+    public void IncrementMemory_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
+    {
+        ushort address = 0xFF00;
+        byte data = 0xFE;
 
-            _bus.Setup(x => x.ReadByte(address)).Returns(data);
-            _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+        var registers = new CPURegisters();
 
-            new IncrementMemoryOperation().Operate(address, registers, _bus.Object);
+        _bus.Setup(x => x.ReadByte(address)).Returns(data);
+        _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
 
-            Assert.True(registers.StatusRegister.Negative);
-        }
+        new IncrementMemoryOperation().Operate(address, registers, _bus.Object);
 
-        [Test]
-        public void IncrementMemory_Should_SetZeroFlag_When_OperationResultsInZeroResult()
-        {
-            ushort address = 0xFF00;
-            byte data = 0xFF;
-           
-            var registers = new CPURegisters();
+        Assert.True(registers.StatusRegister.Negative);
+    }
 
-            _bus.Setup(x => x.ReadByte(address)).Returns(data);
-            _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+    [Test]
+    public void IncrementMemory_Should_SetZeroFlag_When_OperationResultsInZeroResult()
+    {
+        ushort address = 0xFF00;
+        byte data = 0xFF;
 
-            new IncrementMemoryOperation().Operate(address, registers, _bus.Object);
+        var registers = new CPURegisters();
 
-            Assert.True(registers.StatusRegister.Zero);
-        }
+        _bus.Setup(x => x.ReadByte(address)).Returns(data);
+        _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+
+        new IncrementMemoryOperation().Operate(address, registers, _bus.Object);
+
+        Assert.True(registers.StatusRegister.Zero);
     }
 }

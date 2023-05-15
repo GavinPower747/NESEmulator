@@ -1,7 +1,6 @@
-namespace NesEmu.Core
+namespace NesEmu.Core;
+
+public interface IAddressableDevice
 {
-    public interface IAddressableDevice
-    {
-        
-    }
+
 }

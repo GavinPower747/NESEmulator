@@ -6,26 +6,25 @@ using NesEmu.Avalonia.ViewModels;
 using NesEmu.Avalonia.Views;
 using Splat;
 
-namespace NesEmu.Avalonia
+namespace NesEmu.Avalonia;
+
+public class App : Application
 {
-    public class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
+    }
 
-        public override void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.MainWindow = new MainWindow
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = Locator.Current.GetRequiredService<MainWindowViewModel>(),
-                };
-            }
-
-            base.OnFrameworkInitializationCompleted();
+                DataContext = Locator.Current.GetRequiredService<MainWindowViewModel>(),
+            };
         }
+
+        base.OnFrameworkInitializationCompleted();
     }
 }

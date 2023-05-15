@@ -20,7 +20,7 @@ public abstract class ByteRegister
     {
         byte mask = (byte)(1 << index);
 
-        if(value)
+        if (value)
             _backingByte |= mask;
         else
             _backingByte &= (byte)~mask;
@@ -34,7 +34,7 @@ public abstract class ByteRegister
     {
         byte count = (byte)((endIndex - startIndex) + 1);
         byte shifted = (byte)(_backingByte >> startIndex); //shift the desired bits over to the far right of the byte
-            
+
         //if we take the count and subtract 1 we will have a perfect mask to extract our shifted bits
         //e.g. 1 << 3 = 00001000; 00001000 - 1 = 00000111
         byte mask = (byte)((1 << count) - 1);

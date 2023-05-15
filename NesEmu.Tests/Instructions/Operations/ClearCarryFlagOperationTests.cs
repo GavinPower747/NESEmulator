@@ -8,35 +8,34 @@ using NUnit.Framework;
 using Moq;
 using NesEmu.Devices.CPU.Instructions.Addressing;
 
-namespace NesEmu.Tests.Instructions.Operations
+namespace NesEmu.Tests.Instructions.Operations;
+
+[TestFixture]
+public class ClearCarryFlagOperationTests
 {
-    [TestFixture]
-    public class ClearCarryFlagOperationTests
+    [Test]
+    public void ClearCarryFlagOperation_DoesNot_WriteToBus()
     {
-        [Test]
-        public void ClearCarryFlagOperation_DoesNot_WriteToBus()
-        {
-            var bus = new Mock<IBus>();
-            var registers = new CPURegisters();
+        var bus = new Mock<IBus>();
+        var registers = new CPURegisters();
 
-            bus.Setup(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>())).Verifiable();
+        bus.Setup(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>())).Verifiable();
 
-            var extraCycles = new ClearCarryFlagOperation().Operate(0x00, registers, bus.Object);
+        var extraCycles = new ClearCarryFlagOperation().Operate(0x00, registers, bus.Object);
 
-            bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never());
-        }
+        bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never());
+    }
 
-        [Test]
-        public void ClearCarryFlagOperation_ClearsCarryFlag()
-        {
-            var bus = new Mock<IBus>();
-            var registers = new CPURegisters();
+    [Test]
+    public void ClearCarryFlagOperation_ClearsCarryFlag()
+    {
+        var bus = new Mock<IBus>();
+        var registers = new CPURegisters();
 
-            registers.StatusRegister.Carry = true;
+        registers.StatusRegister.Carry = true;
 
-            var extraCycles = new ClearCarryFlagOperation().Operate(0x00, registers, bus.Object);
+        var extraCycles = new ClearCarryFlagOperation().Operate(0x00, registers, bus.Object);
 
-            Assert.That(registers.StatusRegister.Carry, Is.False);
-        }
+        Assert.That(registers.StatusRegister.Carry, Is.False);
     }
 }

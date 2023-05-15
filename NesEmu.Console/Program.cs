@@ -1,18 +1,17 @@
 ﻿using System;
 using NesEmu.Core;
 
-namespace NesEmu.Console
+namespace NesEmu.Console;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            System.Console.WriteLine("Running...");
-            var console = new NintendoEntertainmentSystem();
+        System.Console.WriteLine("Running...");
+        var console = new NintendoEntertainmentSystem();
 
-            console.LoadCartridge("D:\\Dev\\NesEmulator\\TestRoms\\nestest.nes");
+        console.LoadCartridge("D:\\Dev\\NesEmulator\\TestRoms\\nestest.nes");
 
-            console.Disassembler.GetCPUDisassembly(0x0000, 0xFFFF);
-        }
+        console.Disassembler.GetCPUDisassembly(0x0000, 0xFFFF);
     }
 }

@@ -7,120 +7,119 @@ using NesEmu.Devices.CPU.Instructions;
 using NesEmu.Devices.CPU.Instructions.Addressing;
 using NesEmu.Devices.CPU.Instructions.Operations;
 
-namespace NesEmu.Devices.CPU
+namespace NesEmu.Devices.CPU;
+
+internal class CPU : IClockAware
 {
-    internal class CPU : IClockAware
+    public CPURegisters Registers;
+
+    internal Dictionary<ushort, Instruction> OpcodeLookup;
+
+    private IBus _bus;
+    private int _cycles = 0;
+    private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
+
+    internal CPU()
     {
-        public CPURegisters Registers;
+        Registers = new CPURegisters();
 
-        internal Dictionary<ushort, Instruction> OpcodeLookup;
+        OpcodeLookup = new Dictionary<ushort, Instruction>();
 
-        private IBus _bus;
-        private int _cycles = 0;
-        private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
+        PopulateOpcodeLookup();
+    }
 
-        internal CPU()
+    internal void ConnectBus(IBus bus) => _bus = bus;
+
+    public void Tick()
+    {
+        //The traditional NES does operations in multiple cycles, there is no need for us to do it
+        //like that just do everything on the last cycle
+        if (_cycles == 0)
         {
-            Registers = new CPURegisters();
+            var opcode = _bus.ReadByte(Registers.ProgramCounter);
+            Instruction instruction = null;
 
-            OpcodeLookup = new Dictionary<ushort, Instruction>();
+            OpcodeLookup.TryGetValue(opcode, out instruction);
 
-            PopulateOpcodeLookup();
+            if (instruction is null)
+                instruction = _noOpInstruction;
+
+            _cycles = instruction.Cycles;
+            Registers.ProgramCounter++;
+
+            var addressInfo = instruction.AddressingStrategy.GetOperationAddress(Registers, _bus);
+            var operationExtraCycles = instruction.OperationStrategy.Operate(addressInfo.address, Registers, _bus);
+
+            _cycles += addressInfo.extraCycles + operationExtraCycles;
         }
 
-        internal void ConnectBus(IBus bus) => _bus = bus;
+        _cycles--;
+    }
 
-        public void Tick()
+    public void Reset()
+    {
+        ushort address = 0xFFFC;
+        Registers.ProgramCounter = _bus.ReadWord(address);
+
+        Registers.Accumulator = 0;
+        Registers.X = 0;
+        Registers.Y = 0;
+        Registers.StackPointer = 0xFD;
+        Registers.StatusRegister = new StatusRegister(0x00);
+
+        _cycles = 8;
+    }
+
+    public bool OpComplete() => _cycles == 0;
+
+    internal void Interrupt()
+    {
+        if (Registers.StatusRegister.InterruptDisable)
+            return;
+
+        PerformInterrupt();
+    }
+
+    internal void NonMaskableInterrupt()
+    {
+        PerformInterrupt();
+    }
+
+    private void PopulateOpcodeLookup()
+    {
+        var assembly = typeof(CPU).Assembly;
+        var opcodeTypes = assembly.GetTypes().Where(t => t.IsDefined(typeof(OpCodeAttribute), false));
+
+        foreach (var type in opcodeTypes)
         {
-            //The traditional NES does operations in multiple cycles, there is no need for us to do it
-            //like that just do everything on the last cycle
-            if(_cycles == 0)
+            var opcodeAttributes = type.GetCustomAttributes(false).OfType<OpCodeAttribute>();
+
+            foreach (var opcodeAttribute in opcodeAttributes)
             {
-                var opcode = _bus.ReadByte(Registers.ProgramCounter);
-                Instruction instruction = null;
+                var addressingStrategy = Activator.CreateInstance(opcodeAttribute.AddressingMode) as IAddressingStrategy;
+                var operatingStrategy = Activator.CreateInstance(type) as IOperationStrategy;
+                var instruction = new Instruction(operatingStrategy.Name, addressingStrategy, operatingStrategy, opcodeAttribute.Cycles);
 
-                OpcodeLookup.TryGetValue(opcode, out instruction);
-
-                if(instruction is null)
-                    instruction = _noOpInstruction;
-
-                _cycles = instruction.Cycles;
-                Registers.ProgramCounter++;
-
-                var addressInfo = instruction.AddressingStrategy.GetOperationAddress(Registers, _bus);
-                var operationExtraCycles = instruction.OperationStrategy.Operate(addressInfo.address, Registers, _bus);
-
-                _cycles += addressInfo.extraCycles + operationExtraCycles;
-            }
-
-            _cycles--;
-        }
-
-        public void Reset()
-        {
-            ushort address = 0xFFFC;
-            Registers.ProgramCounter = _bus.ReadWord(address);
-
-            Registers.Accumulator = 0;
-            Registers.X = 0;
-            Registers.Y = 0;
-            Registers.StackPointer = 0xFD;
-            Registers.StatusRegister = new StatusRegister(0x00);
-
-            _cycles = 8;
-        }
-
-        public bool OpComplete() => _cycles == 0;
-
-        internal void Interrupt()
-        {
-            if(Registers.StatusRegister.InterruptDisable)
-                return;
-
-            PerformInterrupt();
-        }
-
-        internal void NonMaskableInterrupt()
-        {
-            PerformInterrupt();
-        }
-
-        private void PopulateOpcodeLookup()
-        {
-            var assembly = typeof(CPU).Assembly;
-            var opcodeTypes = assembly.GetTypes().Where(t => t.IsDefined(typeof(OpCodeAttribute), false));
-
-            foreach(var type in opcodeTypes)
-            {
-                var opcodeAttributes = type.GetCustomAttributes(false).OfType<OpCodeAttribute>();
-
-                foreach(var opcodeAttribute in opcodeAttributes)
-                {
-                    var addressingStrategy = Activator.CreateInstance(opcodeAttribute.AddressingMode) as IAddressingStrategy;
-                    var operatingStrategy = Activator.CreateInstance(type) as IOperationStrategy;
-                    var instruction = new Instruction(operatingStrategy.Name, addressingStrategy, operatingStrategy, opcodeAttribute.Cycles);
-
-                    OpcodeLookup.Add(opcodeAttribute.OpCodeAddress, instruction);
-                }
+                OpcodeLookup.Add(opcodeAttribute.OpCodeAddress, instruction);
             }
         }
+    }
 
-        private void PerformInterrupt()
-        {
-            _bus.Write(Registers.GetStackAddress(), (byte)((Registers.ProgramCounter >> 8) & 0x00FF));
-	        Registers.StackPointer--;
+    private void PerformInterrupt()
+    {
+        _bus.Write(Registers.GetStackAddress(), (byte)((Registers.ProgramCounter >> 8) & 0x00FF));
+        Registers.StackPointer--;
 
-	        _bus.Write(Registers.GetStackAddress(), (byte)(Registers.ProgramCounter & 0x00FF));
-	        Registers.StackPointer--;
+        _bus.Write(Registers.GetStackAddress(), (byte)(Registers.ProgramCounter & 0x00FF));
+        Registers.StackPointer--;
 
-            Registers.StatusRegister.Break = true;
-            Registers.StatusRegister.InterruptDisable = true;
-	        _bus.Write(Registers.GetStackAddress(), Registers.StatusRegister);
-	        Registers.StackPointer--;
+        Registers.StatusRegister.Break = true;
+        Registers.StatusRegister.InterruptDisable = true;
+        _bus.Write(Registers.GetStackAddress(), Registers.StatusRegister);
+        Registers.StackPointer--;
 
-	        Registers.ProgramCounter = _bus.ReadWord(0xFFFA);
+        Registers.ProgramCounter = _bus.ReadWord(0xFFFA);
 
-	        _cycles = 8;
-        }
+        _cycles = 8;
     }
 }

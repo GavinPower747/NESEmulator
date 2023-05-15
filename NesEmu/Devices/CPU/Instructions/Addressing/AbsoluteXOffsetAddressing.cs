@@ -1,25 +1,24 @@
 using NesEmu.Core;
 using NesEmu.Extensions;
 
-namespace NesEmu.Devices.CPU.Instructions.Addressing
+namespace NesEmu.Devices.CPU.Instructions.Addressing;
+
+///<summary>
+///Read the full 16 bit address and offset the read value
+///by the value in the X register
+///</summary>
+public class AbsoluteXOffsetAddressing : IAddressingStrategy
 {
-    ///<summary>
-    ///Read the full 16 bit address and offset the read value
-    ///by the value in the X register
-    ///</summary>
-    public class AbsoluteXOffsetAddressing : IAddressingStrategy
+    public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
     {
-        public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
-        {
-            var arg = bus.ReadWord(registers.ProgramCounter);
-            registers.ProgramCounter += 2;
+        var arg = bus.ReadWord(registers.ProgramCounter);
+        registers.ProgramCounter += 2;
 
-            ushort address = (ushort)(arg + registers.X);
+        ushort address = (ushort)(arg + registers.X);
 
-            if(!address.IsOnSamePageAs(arg))
-                return (address, 1);
-            else
-                return (address, 0);
-        }
+        if (!address.IsOnSamePageAs(arg))
+            return (address, 1);
+        else
+            return (address, 0);
     }
 }
