@@ -21,7 +21,7 @@ public class StatusRegister : ByteRegister
 
     public StatusRegister(byte initialValues) : base(initialValues) { }
 
-    public static explicit operator StatusRegister(byte b) => new StatusRegister(b);
+    public static explicit operator StatusRegister(byte b) => new(b);
 
     public void SetZeroAndNegative(byte value)
     {

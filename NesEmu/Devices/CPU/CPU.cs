@@ -17,7 +17,7 @@ internal class CPU : IClockAware
 
     private IBus _bus;
     private int _cycles = 0;
-    private readonly Instruction _noOpInstruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
+    private readonly Instruction _noOpInstruction = new ("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
 
     internal CPU()
     {
@@ -37,20 +37,28 @@ internal class CPU : IClockAware
         if (_cycles == 0)
         {
             var opcode = _bus.ReadByte(Registers.ProgramCounter);
-            Instruction instruction = null;
 
-            OpcodeLookup.TryGetValue(opcode, out instruction);
+            OpcodeLookup.TryGetValue(opcode, out Instruction instruction);
 
-            if (instruction is null)
-                instruction = _noOpInstruction;
+            instruction ??= _noOpInstruction;
 
             _cycles = instruction.Cycles;
             Registers.ProgramCounter++;
 
-            var addressInfo = instruction.AddressingStrategy.GetOperationAddress(Registers, _bus);
-            var operationExtraCycles = instruction.OperationStrategy.Operate(addressInfo.address, Registers, _bus);
+            var (address, extraCycles) = instruction.AddressingStrategy.GetOperationAddress(Registers, _bus);
+            var operationExtraCycles = instruction.OperationStrategy.Operate(address, Registers, _bus);
 
-            _cycles += addressInfo.extraCycles + operationExtraCycles;
+            _cycles += extraCycles + operationExtraCycles;
+
+            Console.WriteLine("PC: {0:X4} OP: {1} A: {2:X2} X: {3:X2} Y: {4:X2} SP: {5:X2} P: {6:X2} CYC: {7}",
+                Registers.ProgramCounter - 1,
+                instruction.Name,
+                Registers.Accumulator,
+                Registers.X,
+                Registers.Y,
+                Registers.StackPointer,
+                Registers.StatusRegister,
+                _cycles);
         }
 
         _cycles--;

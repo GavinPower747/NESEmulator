@@ -5,57 +5,56 @@ using NSubstitute;
 using Xunit;
 using FluentAssertions;
 
-namespace NesEmu.Tests.Instructions.Operations
+namespace NesEmu.Tests.Instructions.Operations;
+
+public class DecrementXRegisterOperationTests
 {
-    public class DecrementXRegisterOperationTests
+    private readonly IBus _bus;
+
+    public DecrementXRegisterOperationTests()
     {
-        private readonly IBus _bus;
+        _bus = Substitute.For<IBus>();
+    }
 
-        public DecrementXRegisterOperationTests()
+    [Fact]
+    public void DecrementXRegister_Should_DecrementRegister()
+    {
+        var registers = new CPURegisters
         {
-            _bus = Substitute.For<IBus>();
-        }
+            X = 0x02
+        };
 
-        [Fact]
-        public void DecrementXRegister_Should_DecrementRegister()
+        _ = new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
+
+        _bus.DidNotReceive().Write(Arg.Any<ushort>(), Arg.Any<byte>());
+        registers.X.Should().Be(0x02 - 1);
+        registers.StatusRegister.Negative.Should().BeFalse();
+        registers.StatusRegister.Zero.Should().BeFalse();
+    }
+
+    [Fact]
+    public void DecrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
+    {
+        var registers = new CPURegisters
         {
-            var registers = new CPURegisters
-            {
-                X = 0x02
-            };
+            X = 0x00
+        };
 
-            new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
+        _ = new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-            _bus.DidNotReceive().Write(Arg.Any<ushort>(), Arg.Any<byte>());
-            registers.X.Should().Be(0x02 - 1);
-            registers.StatusRegister.Negative.Should().BeFalse();
-            registers.StatusRegister.Zero.Should().BeFalse();
-        }
+        registers.StatusRegister.Negative.Should().BeTrue();
+    }
 
-        [Fact]
-        public void DecrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
+    [Fact]
+    public void DecrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
+    {
+        var registers = new CPURegisters
         {
-            var registers = new CPURegisters
-            {
-                X = 0x00
-            };
+            X = 0x01
+        };
 
-            new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
+        _ = new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-            registers.StatusRegister.Negative.Should().BeTrue();
-        }
-
-        [Fact]
-        public void DecrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
-        {
-            var registers = new CPURegisters
-            {
-                X = 0x01
-            };
-
-            new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
-
-            registers.StatusRegister.Zero.Should().BeTrue();
-        }
+        registers.StatusRegister.Zero.Should().BeTrue();
     }
 }

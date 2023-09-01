@@ -13,7 +13,7 @@ public class CPURegisters
 
     public CPURegisters()
     {
-        StatusRegister = new StatusRegister(0x00);
+        StatusRegister = new (0x00);
     }
 
     public ushort GetStackAddress() => (ushort)(StackBaseAddress + StackPointer);

@@ -8,6 +8,7 @@ public interface IOperationStrategy
     ///Three letter abbreviation of the operations name
     ///</summary>
     string Name { get; }
+    
     ///<summary>
     ///Perform the specific operation
     ///</summary>

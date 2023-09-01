@@ -7,8 +7,8 @@ namespace NesEmu.Devices.CPU;
 
 internal class CPUBus : IBus
 {
-    private CPU _cpu;
-    private List<ICPUAddressableDevice> _connectedDevices;
+    private readonly CPU _cpu;
+    private readonly List<ICPUAddressableDevice> _connectedDevices;
 
     internal CPUBus(CPU cpu)
     {
