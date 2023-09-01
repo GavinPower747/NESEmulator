@@ -1,5 +1,12 @@
+using System;
+
 namespace NesEmu.Core;
 
+///<summary>
+/// Represents a register that is 8 bits wide
+/// Has a series of convenience methods for getting and setting individual or ranges of bits
+/// Can also be used interchangeably with a byte
+///</summary>
 public abstract class ByteRegister
 {
     private byte _backingByte;
@@ -9,15 +16,21 @@ public abstract class ByteRegister
         _backingByte = initialValues;
     }
 
-    protected bool GetFlag(int index)
+    protected bool GetFlag(byte index)
     {
+        if(index < 0 || index > 7)
+            throw new ArgumentOutOfRangeException(nameof(index), "Index must be between 0 and 7");
+
         var mask = (byte)(1 << index);
 
         return (_backingByte & mask) != 0;
     }
 
-    protected void SetFlag(int index, bool value)
+    protected void SetFlag(byte index, bool value)
     {
+        if (index < 0 || index > 7)
+            throw new ArgumentOutOfRangeException(nameof(index), "Index must be between 0 and 7");
+
         byte mask = (byte)(1 << index);
 
         if (value)
@@ -32,6 +45,15 @@ public abstract class ByteRegister
     ///<remarks>Overly verbose and commented as this took me ages to come up with and wrap my head around</remarks>
     protected byte GetBitRange(int startIndex, int endIndex)
     {
+        if(startIndex > endIndex)
+            throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be less than or equal to end index");
+        
+        if(startIndex < 0 || startIndex > 7)
+            throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be between 0 and 7");
+        
+        if(endIndex < 0 || endIndex > 7)
+            throw new ArgumentOutOfRangeException(nameof(endIndex), "End index must be between 0 and 7");
+
         byte count = (byte)((endIndex - startIndex) + 1);
         byte shifted = (byte)(_backingByte >> startIndex); //shift the desired bits over to the far right of the byte
 
@@ -49,6 +71,15 @@ public abstract class ByteRegister
     ///<remarks>Overly verbose and commented as this took me ages to come up with and wrap my head around</remarks>
     protected void SetBitRange(int startIndex, int endIndex, byte data)
     {
+        if(startIndex > endIndex)
+            throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be less than or equal to end index");
+        
+        if(startIndex < 0 || startIndex > 7)
+            throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be between 0 and 7");
+        
+        if(endIndex < 0 || endIndex > 7)
+            throw new ArgumentOutOfRangeException(nameof(endIndex), "End index must be between 0 and 7");
+
         byte count = (byte)((endIndex - startIndex) + 1);
         byte mask = (byte)((1 << count) - 1);
 
