@@ -1,29 +1,29 @@
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using NUnit.Framework;
-using Moq;
+using NSubstitute;
+using Xunit;
+using FluentAssertions;
 
 namespace NesEmu.Tests.Instructions.Addressing;
 
-[TestFixture]
 public class IndirectXAddressingTests
 {
-    private Mock<IBus> _cpuBus;
+    private readonly IBus _bus;
 
-    [SetUp]
-    public void Setup()
+    public IndirectXAddressingTests()
     {
-        _cpuBus = new Mock<IBus>();
+        _bus = Substitute.For<IBus>();
     }
 
-    [Test]
+    [Fact]
     public void IndirectXAddressing_Returns_CorrectAddress()
     {
-        var registers = new CPURegisters();
-
-        registers.ProgramCounter = 0x00;
-        registers.X = 0x01;
+        var registers = new CPURegisters
+        {
+            ProgramCounter = 0x00,
+            X = 0x01
+        };
 
         byte arg = 0x01;
         byte lowData = 0x11;
@@ -31,15 +31,15 @@ public class IndirectXAddressingTests
         ushort expectedLowAddress = (ushort)((arg + 0x01) & 0x00FF);
         ushort expectedHiAddress = (ushort)((arg + 0x01 + 1) & 0x00FF);
 
-        _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
-        _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData);
-        _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData);
+        _bus.ReadByte(registers.ProgramCounter).Returns(arg);
+        _bus.ReadByte(expectedLowAddress).Returns(lowData);
+        _bus.ReadByte(expectedHiAddress).Returns(hiData);
 
         var expectedAddress = (ushort)((hiData << 8) | lowData);
 
-        var addressInfo = new IndirectXAddressing().GetOperationAddress(registers, _cpuBus.Object);
+        var (address, extraCycles) = new IndirectXAddressing().GetOperationAddress(registers, _bus);
 
-        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-        Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
+        address.Should().Be(expectedAddress);
+        extraCycles.Should().Be(0);
     }
 }

@@ -1,23 +1,22 @@
 using System.Reflection;
-using Moq;
 using NesEmu.Core;
 using NesEmu.Devices;
-using NUnit.Framework;
+using NSubstitute;
+using Xunit;
+using FluentAssertions;
 
 namespace NesEmu.Tests.Devices;
 
-[TestFixture]
 public class RAMTests
 {
-    private Mock<IBus> _bus;
+    private readonly IBus _bus;
 
-    [SetUp]
-    public void Setup()
+    public RAMTests()
     {
-        _bus = new Mock<IBus>();
+        _bus = Substitute.For<IBus>();
     }
 
-    [Test]
+    [Fact]
     public void Read_Returns_Correct_ValueBelow2KB()
     {
         ushort address = 0x0010;
@@ -31,10 +30,10 @@ public class RAMTests
 
         var data = ram.ReadCpu(address);
 
-        Assert.That(data, Is.EqualTo(memoryVal));
+        data.Should().Be(memoryVal);
     }
 
-    [Test]
+    [Fact]
     public void Read_Returns_Correct_ValueAbove2KB()
     {
         ushort address = 3000;
@@ -48,10 +47,10 @@ public class RAMTests
 
         var data = ram.ReadCpu(address);
 
-        Assert.That(data, Is.EqualTo(memoryVal));
+        data.Should().Be(memoryVal);
     }
 
-    [Test]
+    [Fact]
     public void Write_Sets_CorrectLocation_Below2KB()
     {
         ushort address = 0x0010;
@@ -62,10 +61,10 @@ public class RAMTests
 
         var data = ram.ReadCpu(address);
 
-        Assert.That(data, Is.EqualTo(memoryVal));
+        data.Should().Be(memoryVal);
     }
 
-    [Test]
+    [Fact]
     public void Write_Sets_CorrectLocation_Above2KB()
     {
         ushort address = 3000;
@@ -76,7 +75,7 @@ public class RAMTests
 
         var data = ram.ReadCpu((ushort)(address - 2048));
 
-        Assert.That(data, Is.EqualTo(memoryVal));
+        data.Should().Be(memoryVal);
     }
 
     private void SetRamData(Ram ram, byte[] data)

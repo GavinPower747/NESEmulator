@@ -1,59 +1,61 @@
-using System;
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
-using NUnit;
-using NUnit.Framework;
-using Moq;
+using NSubstitute;
+using Xunit;
+using FluentAssertions;
 
-namespace NesEmu.Tests.Instructions.Operations;
-
-[TestFixture]
-public class DecrementXRegisterOperationTests
+namespace NesEmu.Tests.Instructions.Operations
 {
-    private Mock<IBus> _bus;
-
-    [SetUp]
-    public void Setup()
+    public class DecrementXRegisterOperationTests
     {
-        _bus = new Mock<IBus>();
-    }
+        private readonly IBus _bus;
 
-    [Test]
-    public void DecrementXRegister_Should_DecrementRegister()
-    {
-        var registers = new CPURegisters();
-        registers.X = (byte)0x02;
+        public DecrementXRegisterOperationTests()
+        {
+            _bus = Substitute.For<IBus>();
+        }
 
-        _bus.Setup(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>())).Verifiable();
+        [Fact]
+        public void DecrementXRegister_Should_DecrementRegister()
+        {
+            var registers = new CPURegisters
+            {
+                X = 0x02
+            };
 
-        new DecrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+            new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-        _bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never);
-        Assert.That(registers.X, Is.EqualTo(0x02 - 1));
-        Assert.False(registers.StatusRegister.Negative);
-        Assert.False(registers.StatusRegister.Zero);
-    }
+            _bus.DidNotReceive().Write(Arg.Any<ushort>(), Arg.Any<byte>());
+            registers.X.Should().Be(0x02 - 1);
+            registers.StatusRegister.Negative.Should().BeFalse();
+            registers.StatusRegister.Zero.Should().BeFalse();
+        }
 
-    [Test]
-    public void DecrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
-    {
-        var registers = new CPURegisters();
-        registers.X = (byte)0x00;
+        [Fact]
+        public void DecrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
+        {
+            var registers = new CPURegisters
+            {
+                X = 0x00
+            };
 
-        new DecrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+            new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-        Assert.True(registers.StatusRegister.Negative);
-    }
+            registers.StatusRegister.Negative.Should().BeTrue();
+        }
 
-    [Test]
-    public void DecrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
-    {
-        var registers = new CPURegisters();
-        registers.X = (byte)0x01;
+        [Fact]
+        public void DecrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
+        {
+            var registers = new CPURegisters
+            {
+                X = 0x01
+            };
 
-        new DecrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+            new DecrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-        Assert.True(registers.StatusRegister.Zero);
+            registers.StatusRegister.Zero.Should().BeTrue();
+        }
     }
 }

@@ -1,76 +1,74 @@
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using NUnit;
-using NUnit.Framework;
-using Moq;
+using NSubstitute;
+using Xunit;
+using FluentAssertions;
 
 namespace NesEmu.Tests.Instructions.Addressing;
 
-[TestFixture]
 public class IndirectYAddressingTests
 {
-    private Mock<IBus> _cpuBus;
+    private readonly IBus _bus;
 
-    [SetUp]
-    public void Setup()
+    public IndirectYAddressingTests()
     {
-        _cpuBus = new Mock<IBus>();
+        _bus = Substitute.For<IBus>();
     }
 
-    [Test]
+    [Fact]
     public void IndirectYAddressing_Returns_CorrectAddress()
     {
         var sut = new IndirectYAddressing();
-        var registers = new CPURegisters();
-
-        registers.ProgramCounter = 0x00;
-        registers.Y = 0x01;
+        var registers = new CPURegisters
+        {
+            ProgramCounter = 0x00,
+            Y = 0x01
+        };
 
         byte arg = 0x01;
         byte lowData = 0x11;
         byte hiData = 0x22;
-        ushort expectedLowAddress = (ushort)(arg);
+        ushort expectedLowAddress = arg;
         ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
 
-        _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
-        _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
-        _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
+        _bus.ReadByte(registers.ProgramCounter).Returns(arg);
+        _bus.ReadByte(expectedLowAddress).Returns(lowData);
+        _bus.ReadByte(expectedHiAddress).Returns(hiData);
 
         var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
 
-        var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
+        var (address, extraCycles) = sut.GetOperationAddress(registers, _bus);
 
-        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-        Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
-
-
+        address.Should().Be(expectedAddress);
+        extraCycles.Should().Be(0);
     }
 
-    [Test]
+    [Fact]
     public void IndirectYAddressing_Returns_ExtraCycle_When_OffsetGoesToNextPage()
     {
         var sut = new IndirectYAddressing();
-        var registers = new CPURegisters();
-
-        registers.ProgramCounter = 0x00;
-        registers.Y = 0x01;
+        var registers = new CPURegisters
+        {
+            ProgramCounter = 0x00,
+            Y = 0x01
+        };
 
         byte arg = 0x01;
         byte lowData = 0xFF;
         byte hiData = 0xFF;
-        ushort expectedLowAddress = (ushort)(arg);
+        ushort expectedLowAddress = arg;
         ushort expectedHiAddress = (ushort)((arg + 1) & 0x00FF);
 
-        _cpuBus.Setup(x => x.ReadByte((ushort)(registers.ProgramCounter))).Returns(arg);
-        _cpuBus.Setup(x => x.ReadByte(expectedLowAddress)).Returns(lowData).Verifiable();
-        _cpuBus.Setup(x => x.ReadByte(expectedHiAddress)).Returns(hiData).Verifiable();
+        _bus.ReadByte(registers.ProgramCounter).Returns(arg);
+        _bus.ReadByte(expectedLowAddress).Returns(lowData);
+        _bus.ReadByte(expectedHiAddress).Returns(hiData);
 
         var expectedAddress = (ushort)(((hiData << 8) | lowData) + registers.Y);
 
-        var addressInfo = sut.GetOperationAddress(registers, _cpuBus.Object);
+        var (address, extraCycles) = sut.GetOperationAddress(registers, _bus);
 
-        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-        Assert.That(addressInfo.extraCycles, Is.EqualTo(1));
+        address.Should().Be(expectedAddress);
+        extraCycles.Should().Be(1);
     }
 }

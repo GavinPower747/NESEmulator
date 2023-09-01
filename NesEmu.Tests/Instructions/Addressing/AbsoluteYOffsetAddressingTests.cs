@@ -1,61 +1,62 @@
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using NUnit.Framework;
-using Moq;
+using NSubstitute;
+using Xunit;
+using FluentAssertions;
 
-namespace NesEmu.Instructions.Addressing;
+namespace NesEmu.Tests.Instructions.Addressing;
 
-[TestFixture]
 public class AbsoluteYOffsetAddressingTests
 {
-    private Mock<IBus> _bus;
+    private readonly IBus _bus;
 
-    [SetUp]
-    public void Setup()
+    public AbsoluteYOffsetAddressingTests()
     {
-        _bus = new Mock<IBus>();
+        _bus = Substitute.For<IBus>();
     }
 
-    [Test]
+    [Fact]
     public void AbsoluteAddressingYOffset_Returns_CorrectAddress()
     {
-        var registers = new CPURegisters();
-
-        registers.ProgramCounter = 0x00;
-        registers.Y = 0x01;
+        var registers = new CPURegisters
+        {
+            ProgramCounter = 0x00,
+            Y = 0x01
+        };
 
         byte arg = 0x0011;
         byte expectedAddress = (byte)(arg + 0x01);
 
-        _bus.Setup(x => x.ReadWord(registers.ProgramCounter)).Returns(arg);
+        _bus.ReadWord(registers.ProgramCounter).Returns(arg);
 
-        var addressInfo = new AbsoluteYOffsetAddressing().GetOperationAddress(registers, _bus.Object);
+        var (address, extraCycles) = new AbsoluteYOffsetAddressing().GetOperationAddress(registers, _bus);
 
-        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-        Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
+        address.Should().Be(expectedAddress);
+        extraCycles.Should().Be(0);
     }
 
-    [Test]
+    [Fact]
     public void AbsoluteAddressingYOffset_Returns_ExtraCycle_When_OffsetGoesToNextPage()
     {
-        var registers = new CPURegisters();
-
-        registers.ProgramCounter = 0x00;
-        registers.Y = 0xFF;
+        var registers = new CPURegisters
+        {
+            ProgramCounter = 0x00,
+            Y = 0xFF
+        };
 
         byte arg = 0x01;
         ushort expectedAddress = (ushort)(arg + 0xFF);
 
-        _bus.Setup(x => x.ReadWord(registers.ProgramCounter)).Returns(arg);
+        _bus.ReadWord(registers.ProgramCounter).Returns(arg);
 
-        var addressInfo = new AbsoluteYOffsetAddressing().GetOperationAddress(registers, _bus.Object);
+        var (address, extraCycles) = new AbsoluteYOffsetAddressing().GetOperationAddress(registers, _bus);
 
-        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-        Assert.That(addressInfo.extraCycles, Is.EqualTo(1));
+        address.Should().Be(expectedAddress);
+        extraCycles.Should().Be(1);
     }
 
-    [Test]
+    [Fact]
     public void AbsoluteAddressingYOffset_Increments_ProgramCounter_ByTwo()
     {
         var registers = new CPURegisters();
@@ -65,12 +66,11 @@ public class AbsoluteYOffsetAddressingTests
         registers.Y = 0xFF;
 
         byte arg = 0x01;
-        ushort expectedAddress = (ushort)(arg + 0xFF);
 
-        _bus.Setup(x => x.ReadWord(registers.ProgramCounter)).Returns(arg);
+        _bus.ReadWord(registers.ProgramCounter).Returns(arg);
 
-        var addressInfo = new AbsoluteYOffsetAddressing().GetOperationAddress(registers, _bus.Object);
+        _ = new AbsoluteYOffsetAddressing().GetOperationAddress(registers, _bus);
 
-        Assert.That(registers.ProgramCounter, Is.EqualTo(initialProgramCounter + 2));
+        registers.ProgramCounter.Should().Be((ushort)(initialProgramCounter + 2));
     }
 }

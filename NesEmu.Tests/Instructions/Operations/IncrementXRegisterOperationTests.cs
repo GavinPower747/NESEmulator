@@ -1,59 +1,63 @@
-using System;
+using FluentAssertions;
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
-using NUnit;
-using NUnit.Framework;
-using Moq;
+using NSubstitute;
+using Xunit;
 
-namespace NesEmu.Tests.Instructions.Operations;
-
-[TestFixture]
-public class IncrementXRegisterOperationTests
+namespace NesEmu.Tests.Instructions.Operations
 {
-    private Mock<IBus> _bus;
-
-    [SetUp]
-    public void Setup()
+    public class IncrementXRegisterOperationTests
     {
-        _bus = new Mock<IBus>();
-    }
+        private readonly IBus _bus;
 
-    [Test]
-    public void IncrementXRegister_Should_IncrementRegister()
-    {
-        var registers = new CPURegisters();
-        registers.X = (byte)0x02;
+        public IncrementXRegisterOperationTests()
+        {
+            _bus = Substitute.For<IBus>();
+        }
 
-        _bus.Setup(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>())).Verifiable();
+        [Fact]
+        public void IncrementXRegister_Should_IncrementRegister()
+        {
+            var registers = new CPURegisters
+            {
+                X = 0x02
+            };
 
-        new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+            _bus.Write(Arg.Any<ushort>(), Arg.Any<byte>());
 
-        _bus.Verify(x => x.Write(It.IsAny<ushort>(), It.IsAny<byte>()), Times.Never);
-        Assert.That(registers.X, Is.EqualTo(0x02 + 1));
-        Assert.False(registers.StatusRegister.Negative);
-        Assert.False(registers.StatusRegister.Zero);
-    }
+            new IncrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-    [Test]
-    public void IncrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
-    {
-        var registers = new CPURegisters();
-        registers.X = (byte)0xFE;
+            _bus.DidNotReceive().Write(Arg.Any<ushort>(), Arg.Any<byte>());
+            registers.X.Should().Be(0x03);
+            registers.StatusRegister.Negative.Should().BeFalse();
+            registers.StatusRegister.Zero.Should().BeFalse();
+        }
 
-        new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+        [Fact]
+        public void IncrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
+        {
+            var registers = new CPURegisters
+            {
+                X = 0xFE
+            };
 
-        Assert.True(registers.StatusRegister.Negative);
-    }
+            new IncrementXRegisterOperation().Operate(0x00, registers, _bus);
 
-    [Test]
-    public void IncrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
-    {
-        var registers = new CPURegisters();
-        registers.X = (byte)(0xFF);
+            registers.StatusRegister.Negative.Should().BeTrue();
+        }
 
-        new IncrementXRegisterOperation().Operate(0x00, registers, _bus.Object);
+        [Fact]
+        public void IncrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
+        {
+            var registers = new CPURegisters
+            {
+                X = 0xFF
+            };
 
-        Assert.True(registers.StatusRegister.Zero);
+            new IncrementXRegisterOperation().Operate(0x00, registers, _bus);
+
+            registers.StatusRegister.Zero.Should().BeTrue();
+        }
     }
 }

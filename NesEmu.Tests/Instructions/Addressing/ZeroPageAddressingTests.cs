@@ -1,37 +1,35 @@
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using NUnit;
-using NUnit.Framework;
-using Moq;
+using NSubstitute;
+using FluentAssertions;
+using Xunit;
 
 namespace NesEmu.Tests.Instructions.Addressing;
 
-[TestFixture]
 public class ZeroPageAddressingTests
 {
-    private Mock<IBus> _bus;
+    private readonly IBus _bus;
 
-    [SetUp]
-    public void Setup()
+    public ZeroPageAddressingTests()
     {
-        _bus = new Mock<IBus>();
+        _bus = Substitute.For<IBus>();
     }
 
-    [Test]
+    [Fact]
     public void ZeroPageAddressing_Returns_CorrectAddress()
     {
         var registers = new CPURegisters();
 
         registers.ProgramCounter = 0x0000;
 
-        _bus.Setup(x => x.ReadByte(0x0000)).Returns(0x0011);
+        _bus.ReadByte(0x0000).Returns((byte)0x0011);
 
-        ushort expectedAddress = (ushort)(0x0011 & 0x00FF);
+        ushort expectedAddress = 0x0011 & 0x00FF;
 
-        var addressInfo = new ZeroPageXOffsetAddressing().GetOperationAddress(registers, _bus.Object);
+        var (address, cycles) = new ZeroPageXOffsetAddressing().GetOperationAddress(registers, _bus);
 
-        Assert.That(addressInfo.address, Is.EqualTo(expectedAddress));
-        Assert.That(addressInfo.extraCycles, Is.EqualTo(0));
+        address.Should().Be(expectedAddress);
+        cycles.Should().Be(0);
     }
 }

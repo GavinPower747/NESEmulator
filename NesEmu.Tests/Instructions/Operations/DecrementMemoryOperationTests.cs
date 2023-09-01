@@ -1,23 +1,22 @@
-using NUnit.Framework;
 using NesEmu.Core;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.CPU.Instructions.Operations;
-using Moq;
+using NSubstitute;
+using Xunit;
+using FluentAssertions;
 
 namespace NesEmu.Tests.Instructions.Operations;
 
-[TestFixture]
 public class DecrementMemoryOperationTests
 {
-    private Mock<IBus> _bus;
+    private readonly IBus _bus;
 
-    [SetUp]
-    public void Setup()
+    public DecrementMemoryOperationTests()
     {
-        _bus = new Mock<IBus>();
+        _bus = Substitute.For<IBus>();
     }
 
-    [Test]
+    [Fact]
     public void DecrementMemory_Should_DecrementAtMemoryLocation()
     {
         ushort address = 0xFF00;
@@ -25,17 +24,17 @@ public class DecrementMemoryOperationTests
 
         var registers = new CPURegisters();
 
-        _bus.Setup(x => x.ReadByte(address)).Returns(data);
-        _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+        _bus.ReadByte(address).Returns(data);
+        _bus.When(x => x.Write(address, Arg.Any<byte>()));
 
-        new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
+        new DecrementMemoryOperation().Operate(address, registers, _bus);
 
-        _bus.Verify(x => x.Write(address, (byte)(data - 1)), Times.Once);
-        Assert.False(registers.StatusRegister.Negative);
-        Assert.False(registers.StatusRegister.Zero);
+        _bus.Received(1).Write(address, (byte)(data - 1));
+        registers.StatusRegister.Negative.Should().BeFalse();
+        registers.StatusRegister.Zero.Should().BeFalse();
     }
 
-    [Test]
+    [Fact]
     public void DecrementMemory_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
     {
         ushort address = 0xFF00;
@@ -43,15 +42,15 @@ public class DecrementMemoryOperationTests
 
         var registers = new CPURegisters();
 
-        _bus.Setup(x => x.ReadByte(address)).Returns(data);
-        _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+        _bus.ReadByte(address).Returns(data);
+        _bus.When(x => x.Write(address, Arg.Any<byte>())).Do(x => data = x.Arg<byte>());
 
-        new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
+        new DecrementMemoryOperation().Operate(address, registers, _bus);
 
-        Assert.True(registers.StatusRegister.Negative);
+        registers.StatusRegister.Negative.Should().BeTrue();
     }
 
-    [Test]
+    [Fact]
     public void DecrementMemory_Should_SetZeroFlag_When_OperationResultsInZeroResult()
     {
         ushort address = 0xFF00;
@@ -59,11 +58,11 @@ public class DecrementMemoryOperationTests
 
         var registers = new CPURegisters();
 
-        _bus.Setup(x => x.ReadByte(address)).Returns(data);
-        _bus.Setup(x => x.Write(address, It.IsAny<byte>())).Verifiable();
+        _bus.ReadByte(address).Returns(data);
+        _bus.When(x => x.Write(address, Arg.Any<byte>())).Do(x => data = x.Arg<byte>());
 
-        new DecrementMemoryOperation().Operate(address, registers, _bus.Object);
+        new DecrementMemoryOperation().Operate(address, registers, _bus);
 
-        Assert.True(registers.StatusRegister.Zero);
+        registers.StatusRegister.Zero.Should().BeTrue();
     }
 }

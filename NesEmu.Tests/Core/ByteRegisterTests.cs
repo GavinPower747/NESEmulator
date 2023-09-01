@@ -1,44 +1,42 @@
-using System;
 using NesEmu.Core;
-using NUnit.Framework;
+using Xunit;
+using FluentAssertions;
 
 namespace NesEmu.Tests.Core;
 
-[TestFixture]
 public class ByteRegisterTests
 {
-    [Test]
+    [Fact]
     public void Can_Set_Flag()
     {
-        TestRegister testRegister = new();
+        TestRegister testRegister = new()
+        {
+            FourthBit = true
+        };
 
-        testRegister.FourthBit = true;
-
-        Assert.That(testRegister.FourthBit, Is.True);
+        testRegister.FourthBit.Should().BeTrue();
     }
 
-    [Test]
+    [Fact]
     public void Can_Get_Flag()
     {
         byte testByte = 0b000010000;
         TestRegister testRegister = new(testByte);
 
-        var bit = testRegister.FourthBit;
-
-        Assert.That(bit, Is.EqualTo((testByte & (1 << 4)) == 0));
+        testRegister.FourthBit.Should().BeTrue();
     }
 
-    [Test]
+    [Fact]
     public void Can_Set_BitRange()
     {
         TestRegister testRegister = new(0b11111111);
 
         testRegister.MultiByte = 0b101;
 
-        Assert.That(testRegister.MultiByte, Is.EqualTo(0b101));
+        testRegister.MultiByte.Should().Be(0b101);
     }
 
-    [Test]
+    [Fact]
     public void Set_DoesntChange_OtherBits()
     {
         TestRegister register = new(0b11111111);
@@ -46,10 +44,10 @@ public class ByteRegisterTests
         register.MultiByte = 0b000;
         byte backingByte = register;
 
-        Assert.That(backingByte, Is.EqualTo(0b11110001));
+        backingByte.Should().Be(0b11110001);
     }
 
-    [Test]
+    [Fact]
     public void Set_DoesntChange_OtherBits_When_BitIsOversized()
     {
         TestRegister register = new(0b11111111);
@@ -57,16 +55,16 @@ public class ByteRegisterTests
         register.MultiByte = 0b00001011;
         byte backingByte = register;
 
-        Assert.That(backingByte, Is.EqualTo(0b11110111));
+        backingByte.Should().Be(0b11110111);
     }
 
-    [Test]
+    [Fact]
     public void Can_Get_BitRange()
     {
         byte testByte = 0b000001010;
         TestRegister testRegister = new(testByte);
 
-        Assert.That(testRegister.MultiByte, Is.EqualTo(0b101));
+        testRegister.MultiByte.Should().Be(0b101);
     }
 
 
