@@ -10,7 +10,7 @@ public class ClearCarryFlagOperation : IOperationStrategy
 {
     public string Name => "CLC";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StatusRegister.Carry = false;
 
@@ -23,7 +23,7 @@ public class ClearDecimalModeOperation : IOperationStrategy
 {
     public string Name => "CLD";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StatusRegister.Decimal = false;
 
@@ -36,7 +36,7 @@ public class ClearInterruptDisableOperation : IOperationStrategy
 {
     public string Name => "CLI";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StatusRegister.InterruptDisable = false;
 
@@ -49,7 +49,7 @@ public class ClearOverflowFlagOperation : IOperationStrategy
 {
     public string Name => "CLV";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StatusRegister.Overflow = false;
 

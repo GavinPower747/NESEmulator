@@ -4,7 +4,7 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing;
 
 public class IndirectAddressing : IAddressingStrategy
 {
-    public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
+    public (ushort address, int extraCycles) GetOperationAddress(CpuRegisters registers, IBus bus)
     {
         var address = bus.ReadWord(registers.ProgramCounter);
         registers.ProgramCounter += 2;

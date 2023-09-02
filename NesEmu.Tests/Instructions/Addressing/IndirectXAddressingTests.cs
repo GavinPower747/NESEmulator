@@ -19,7 +19,7 @@ public class IndirectXAddressingTests
     [Fact]
     public void IndirectXAddressing_Returns_CorrectAddress()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             X = 0x01

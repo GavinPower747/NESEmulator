@@ -19,7 +19,7 @@ public class AbsoluteYOffsetAddressingTests
     [Fact]
     public void AbsoluteAddressingYOffset_Returns_CorrectAddress()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             Y = 0x01
@@ -39,7 +39,7 @@ public class AbsoluteYOffsetAddressingTests
     [Fact]
     public void AbsoluteAddressingYOffset_Returns_ExtraCycle_When_OffsetGoesToNextPage()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             Y = 0xFF
@@ -59,7 +59,7 @@ public class AbsoluteYOffsetAddressingTests
     [Fact]
     public void AbsoluteAddressingYOffset_Increments_ProgramCounter_ByTwo()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
         ushort initialProgramCounter = 0x00;
 
         registers.ProgramCounter = initialProgramCounter;

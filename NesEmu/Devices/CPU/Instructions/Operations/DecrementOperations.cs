@@ -12,7 +12,7 @@ public class DecrementMemoryOperation : IOperationStrategy
 {
     public string Name => "DEC";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var data = bus.ReadByte(address);
         byte newValue = (byte)(data - 1);
@@ -30,7 +30,7 @@ public class DecrementXRegisterOperation : IOperationStrategy
 {
     public string Name => "DEX";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.X -= 1;
 
@@ -44,7 +44,7 @@ public class DecrementYRegisterOperation : IOperationStrategy
 {
     public string Name => "DEY";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Y -= 1;
 

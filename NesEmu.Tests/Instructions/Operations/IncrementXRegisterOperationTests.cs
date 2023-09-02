@@ -19,7 +19,7 @@ namespace NesEmu.Tests.Instructions.Operations
         [Fact]
         public void IncrementXRegister_Should_IncrementRegister()
         {
-            var registers = new CPURegisters
+            var registers = new CpuRegisters
             {
                 X = 0x02
             };
@@ -37,7 +37,7 @@ namespace NesEmu.Tests.Instructions.Operations
         [Fact]
         public void IncrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
         {
-            var registers = new CPURegisters
+            var registers = new CpuRegisters
             {
                 X = 0xFE
             };
@@ -50,7 +50,7 @@ namespace NesEmu.Tests.Instructions.Operations
         [Fact]
         public void IncrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
         {
-            var registers = new CPURegisters
+            var registers = new CpuRegisters
             {
                 X = 0xFF
             };

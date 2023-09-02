@@ -12,17 +12,18 @@ namespace NesEmu.Core;
 public class NintendoEntertainmentSystem
 {
     public readonly Disassembler Disassembler;
-    public readonly PPU PPU;
-    private readonly CPU _processor;
-    private readonly CPUBus _cpuBus;
+    
+    private readonly PPU PPU;
+    private readonly Cpu _processor;
+    private readonly CpuBus _cpuBus;
     private readonly PPUBus _ppuBus;
     private readonly Ram _ram;
     private Cartridge _cartridge;
 
     public NintendoEntertainmentSystem()
     {
-        _processor = new CPU();
-        _cpuBus = new CPUBus(_processor);
+        _processor = new Cpu();
+        _cpuBus = new CpuBus(_processor);
         _ppuBus = new PPUBus();
         PPU = new PPU(_ppuBus);
         _ram = new Ram();
@@ -51,6 +52,9 @@ public class NintendoEntertainmentSystem
     {
         _cartridge = new Cartridge(pathToRom);
         _cartridge.Load();
+
+        _cpuBus.ConnectDevice(_cartridge);
+        _ppuBus.ConnectDevice(_cartridge);
     }
 
     public void SaveState()

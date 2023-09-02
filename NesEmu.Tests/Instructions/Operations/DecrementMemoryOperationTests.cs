@@ -22,7 +22,7 @@ public class DecrementMemoryOperationTests
         ushort address = 0xFF00;
         byte data = 0x02;
 
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
 
         _bus.ReadByte(address).Returns(data);
         _bus.When(x => x.Write(address, Arg.Any<byte>()));
@@ -40,7 +40,7 @@ public class DecrementMemoryOperationTests
         ushort address = 0xFF00;
         byte data = 0x00;
 
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
 
         _bus.ReadByte(address).Returns(data);
         _bus.When(x => x.Write(address, Arg.Any<byte>())).Do(x => data = x.Arg<byte>());
@@ -56,7 +56,7 @@ public class DecrementMemoryOperationTests
         ushort address = 0xFF00;
         byte data = 0x01;
 
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
 
         _bus.ReadByte(address).Returns(data);
         _bus.When(x => x.Write(address, Arg.Any<byte>())).Do(x => data = x.Arg<byte>());

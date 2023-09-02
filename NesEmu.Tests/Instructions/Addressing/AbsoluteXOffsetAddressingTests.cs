@@ -20,7 +20,7 @@ public class AbsoluteXOffsetAddressingTests
     public void GetOperationAddress_Returns_CorrectAddress()
     {
         // Arrange
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             X = 0x01
@@ -41,7 +41,7 @@ public class AbsoluteXOffsetAddressingTests
     public void GetOperationAddress_Returns_ExtraCycle_When_OffsetGoesToNextPage()
     {
         // Arrange
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             X = 0xFF
@@ -63,7 +63,7 @@ public class AbsoluteXOffsetAddressingTests
     public void GetOperationAddress_Increments_ProgramCounter_ByTwo()
     {
         // Arrange
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             X = 0x01

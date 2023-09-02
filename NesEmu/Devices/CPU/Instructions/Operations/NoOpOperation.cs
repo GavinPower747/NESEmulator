@@ -13,7 +13,7 @@ public class NoOpOperation : IOperationStrategy
 {
     public string Name => "NOP";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         return 0;
     }

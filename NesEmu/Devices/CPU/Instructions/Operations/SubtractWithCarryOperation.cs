@@ -17,7 +17,7 @@ public class SubtractWithCarryOperation : IOperationStrategy
 {
     public string Name => "SBC";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var fetched = bus.ReadByte(address);
 

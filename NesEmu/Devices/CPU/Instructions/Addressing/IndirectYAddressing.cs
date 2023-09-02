@@ -6,7 +6,7 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing;
 //adr = PEEK(arg) + PEEK((arg + 1) % 256) * 256 + Y	
 public class IndirectYAddressing : IAddressingStrategy
 {
-    public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
+    public (ushort address, int extraCycles) GetOperationAddress(CpuRegisters registers, IBus bus)
     {
         var arg = bus.ReadByte(registers.ProgramCounter);
         registers.ProgramCounter++;

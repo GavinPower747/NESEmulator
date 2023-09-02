@@ -10,7 +10,7 @@ public class JumpOperation : IOperationStrategy
 {
     public string Name => "JMP";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.ProgramCounter = address;
 

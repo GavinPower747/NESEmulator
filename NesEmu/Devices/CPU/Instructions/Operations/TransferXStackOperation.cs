@@ -9,7 +9,7 @@ namespace NesEmu.Devices.CPU.Instructions.Operations;
 public class TransferXStackOperation : IOperationStrategy
 {
     public string Name => "TXS";
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StackPointer = registers.X;
 

@@ -19,7 +19,7 @@ namespace NesEmu.Tests.Instructions.Operations
         [Fact]
         public void DecrementYRegister_Should_DecrementRegister()
         {
-            var registers = new CPURegisters
+            var registers = new CpuRegisters
             {
                 Y = 0x02
             };
@@ -35,7 +35,7 @@ namespace NesEmu.Tests.Instructions.Operations
         [Fact]
         public void DecrementYRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
         {
-            var registers = new CPURegisters
+            var registers = new CpuRegisters
             {
                 Y = 0x00
             };
@@ -48,7 +48,7 @@ namespace NesEmu.Tests.Instructions.Operations
         [Fact]
         public void DecrementYRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
         {
-            var registers = new CPURegisters
+            var registers = new CpuRegisters
             {
                 Y = 0x01
             };

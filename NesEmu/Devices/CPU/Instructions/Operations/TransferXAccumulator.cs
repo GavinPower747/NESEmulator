@@ -9,7 +9,7 @@ public class TransferXAccumulator : IOperationStrategy
 {
     public string Name => "TXA";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Accumulator = registers.X;
 

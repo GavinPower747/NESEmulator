@@ -12,7 +12,7 @@ public class PushAccumulatorOperation : IOperationStrategy
 {
     public string Name => "PHA";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         ushort stackAddress = (ushort)(0x0100 + registers.StackPointer);
 

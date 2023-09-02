@@ -11,6 +11,6 @@ public abstract class Mapper
         CharacterBanks = characterBanks;
     }
 
-    protected abstract ushort GetCpuMappedAddress(ushort suppliedAddress);
-    protected abstract ushort GetPPUMappedAddress(ushort suppliedAddress);
+    public abstract ushort GetCpuMappedAddress(ushort suppliedAddress);
+    public abstract ushort GetPPUMappedAddress(ushort suppliedAddress);
 }

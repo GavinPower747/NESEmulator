@@ -7,12 +7,12 @@ namespace NesEmu.Tests.Instructions.Addressing;
 
 public class ImmediateAddressingTests
 {
-    private readonly CPUBus _cpuBus;
+    private readonly CpuBus _cpuBus;
 
     public ImmediateAddressingTests()
     {
-        var cpu = new CPU();
-        _cpuBus = new CPUBus(cpu);
+        var cpu = new Cpu();
+        _cpuBus = new CpuBus(cpu);
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class ImmediateAddressingTests
     {
         //The program counter should have already been incremented before the address is retrieved
         //so just return the program counter rather than program counter + 1
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00
         };
@@ -35,7 +35,7 @@ public class ImmediateAddressingTests
     [Fact]
     public void ImmediateAddressing_ShouldNot_ModifyStatus()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
         var status = new StatusRegister(0x00)
         {
             Zero = true
@@ -53,7 +53,7 @@ public class ImmediateAddressingTests
     [Fact]
     public void ImmediateAddressing_Should_Increment_ProgramCounter_ByOne()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
         ushort initialProgramCounter = 0x00;
 
         registers.ProgramCounter = initialProgramCounter;

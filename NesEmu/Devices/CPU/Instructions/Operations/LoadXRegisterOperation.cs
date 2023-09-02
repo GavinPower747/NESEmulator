@@ -13,7 +13,7 @@ public class LoadXRegisterOperation : IOperationStrategy
 {
     public string Name => "LDX";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var data = bus.ReadByte(address);
         registers.X = data;

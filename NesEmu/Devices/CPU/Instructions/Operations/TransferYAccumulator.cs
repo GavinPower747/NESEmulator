@@ -9,7 +9,7 @@ public class TransferYAccumulator : IOperationStrategy
 {
     public string Name => "TYA";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Accumulator = registers.Y;
 

@@ -11,18 +11,18 @@ namespace NesEmu.Core;
 ///</summary>
 public class Disassembler
 {
-    private IBus _cpuBus;
-    private IBus _ppuBus;
-    private CPU _cpu;
+    private readonly IBus _cpuBus;
+    private readonly IBus _ppuBus;
+    private readonly Cpu _cpu;
 
-    internal Disassembler(IBus cpuBus, IBus ppuBus, CPU cpu)
+    internal Disassembler(IBus cpuBus, IBus ppuBus, Cpu cpu)
     {
         _cpuBus = cpuBus;
         _ppuBus = ppuBus;
         _cpu = cpu;
     }
 
-    public CPURegisters GetCpuRegisterStatus() => _cpu.Registers;
+    public CpuRegisters GetCpuRegisterStatus() => _cpu.Registers;
 
     public Dictionary<ushort, string> GetCPUDisassembly(ushort start, ushort end)
     {
@@ -31,20 +31,15 @@ public class Disassembler
 
         while (address < end)
         {
-            Instruction instruction = null;
             var opcode = _cpuBus.ReadByte(address);
             var lineAddress = address;
-            var lineString = string.Empty;
+            _cpu.OpcodeLookup.TryGetValue(opcode, out Instruction instruction);
 
-            _cpu.OpcodeLookup.TryGetValue(opcode, out instruction);
-
-            if (instruction is null)
-                instruction = new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
+            instruction ??= new Instruction("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
 
             address++;
 
-            lineString = instruction.Name + "  ";
-
+            string lineString = instruction.Name + "  ";
             switch (instruction.AddressingStrategy)
             {
                 case ImpliedAddressing _:
@@ -142,7 +137,7 @@ public class Disassembler
                     {
                         var value = _cpuBus.ReadByte(address);
                         address++;
-                        lineString += "$" + value.ToString("X2") + " [$" + ((ushort)address + value).ToString("X4") + "] {REL}";
+                        lineString += "$" + value.ToString("X2") + " [$" + (address + value).ToString("X4") + "] {REL}";
                         break;
                     }
             }

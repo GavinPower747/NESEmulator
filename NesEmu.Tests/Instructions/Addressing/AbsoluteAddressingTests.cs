@@ -20,7 +20,7 @@ public class AbsoluteAddressingTests
     public void AbsoluteAddressing_Returns_CorrectAddress()
     {
         var strat = new AbsoluteAddressing();
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00
         };
@@ -39,7 +39,7 @@ public class AbsoluteAddressingTests
     public void AbsoluteAddressing_Increments_ProgramCounter_ByTwo()
     {
         var strat = new AbsoluteAddressing();
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
         ushort initialProgramCounter = 0x00;
 
         registers.ProgramCounter = initialProgramCounter;

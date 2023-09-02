@@ -11,25 +11,21 @@ public class PPUBus : IBus
 
     public void ConnectDevice(IAddressableDevice device)
     {
-        if (device is IPPUAddressableDevice ppuDevice)
-        {
-            //TODO: check to make sure not overlapping ... blah.. blah
-            _devices.Add(ppuDevice);
-        }
-
-        throw new ArgumentException("Trying to connect a non-PPU addressable device to the PPU Bus");
+        if (device is not IPPUAddressableDevice ppuDevice)
+            throw new ArgumentException("Trying to connect a non-PPU addressable device to the PPU Bus");
+        
+        //TODO: check to make sure not overlapping ... blah.. blah
+        _devices.Add(ppuDevice);
     }
 
     public byte ReadByte(ushort address)
     {
         var device = _devices.FirstOrDefault(x => x.PPURange.ContainsAddress(address));
 
-        if (device is not null)
-        {
-            return device.ReadPPU(address);
-        }
+        if (device is null)
+            return 0;
 
-        return 0;
+        return device.ReadPPU(address);
     }
 
     public ushort ReadWord(ushort address)

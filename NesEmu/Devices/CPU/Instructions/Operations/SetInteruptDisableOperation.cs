@@ -9,7 +9,7 @@ public class SetInteruptDisableOperation : IOperationStrategy
 {
     public string Name => "SEI";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StatusRegister.InterruptDisable = true;
 

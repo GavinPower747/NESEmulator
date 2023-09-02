@@ -19,7 +19,7 @@ public class ZeroPageAddressingTests
     [Fact]
     public void ZeroPageAddressing_Returns_CorrectAddress()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
 
         registers.ProgramCounter = 0x0000;
 

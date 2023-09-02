@@ -20,7 +20,7 @@ public class IndirectYAddressingTests
     public void IndirectYAddressing_Returns_CorrectAddress()
     {
         var sut = new IndirectYAddressing();
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             Y = 0x01
@@ -48,7 +48,7 @@ public class IndirectYAddressingTests
     public void IndirectYAddressing_Returns_ExtraCycle_When_OffsetGoesToNextPage()
     {
         var sut = new IndirectYAddressing();
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00,
             Y = 0x01

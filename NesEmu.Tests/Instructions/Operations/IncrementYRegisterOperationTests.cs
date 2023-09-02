@@ -20,7 +20,7 @@ public class IncrementYRegisterTests
     [Fact]
     public void IncrementYRegister_Should_IncrementRegister()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             Y = 0x02
         };
@@ -36,7 +36,7 @@ public class IncrementYRegisterTests
     [Fact]
     public void IncrementYRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             Y = 0xFE
         };
@@ -49,7 +49,7 @@ public class IncrementYRegisterTests
     [Fact]
     public void IncrementYRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             Y = 0xFF
         };

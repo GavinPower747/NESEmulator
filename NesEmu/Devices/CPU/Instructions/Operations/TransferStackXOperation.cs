@@ -10,7 +10,7 @@ public class TransferStackXOperation : IOperationStrategy
 {
     public string Name => "TSX";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.X = registers.StackPointer;
 

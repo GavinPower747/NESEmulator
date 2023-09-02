@@ -1,6 +1,6 @@
 namespace NesEmu.Devices.CPU;
 
-public class CPURegisters
+public class CpuRegisters
 {
     public byte Accumulator;
     public byte X;
@@ -11,7 +11,7 @@ public class CPURegisters
 
     private const ushort StackBaseAddress = 0x0100;
 
-    public CPURegisters()
+    public CpuRegisters()
     {
         StatusRegister = new (0x00);
     }

@@ -12,7 +12,7 @@ public class RotateRightOperation : IOperationStrategy
 {
     public string Name => "ROR";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var hadCarry = registers.StatusRegister.Carry;
         var value = bus.ReadByte(address);
@@ -36,7 +36,7 @@ public class RotateRightAccumulatorOperation : IOperationStrategy
 {
     public string Name => "ROR";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var hadCarry = registers.StatusRegister.Carry;
 

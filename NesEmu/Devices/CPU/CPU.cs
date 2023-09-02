@@ -9,9 +9,9 @@ using NesEmu.Devices.CPU.Instructions.Operations;
 
 namespace NesEmu.Devices.CPU;
 
-internal class CPU : IClockAware
+internal class Cpu : IClockAware
 {
-    public CPURegisters Registers;
+    public CpuRegisters Registers;
 
     internal Dictionary<ushort, Instruction> OpcodeLookup;
 
@@ -19,10 +19,9 @@ internal class CPU : IClockAware
     private int _cycles = 0;
     private readonly Instruction _noOpInstruction = new ("NOP", new ImpliedAddressing(), new NoOpOperation(), 2);
 
-    internal CPU()
+    internal Cpu()
     {
-        Registers = new CPURegisters();
-
+        Registers = new CpuRegisters();
         OpcodeLookup = new Dictionary<ushort, Instruction>();
 
         PopulateOpcodeLookup();
@@ -49,16 +48,6 @@ internal class CPU : IClockAware
             var operationExtraCycles = instruction.OperationStrategy.Operate(address, Registers, _bus);
 
             _cycles += extraCycles + operationExtraCycles;
-
-            Console.WriteLine("PC: {0:X4} OP: {1} A: {2:X2} X: {3:X2} Y: {4:X2} SP: {5:X2} P: {6:X2} CYC: {7}",
-                Registers.ProgramCounter - 1,
-                instruction.Name,
-                Registers.Accumulator,
-                Registers.X,
-                Registers.Y,
-                Registers.StackPointer,
-                Registers.StatusRegister,
-                _cycles);
         }
 
         _cycles--;
@@ -78,7 +67,7 @@ internal class CPU : IClockAware
         _cycles = 8;
     }
 
-    public bool OpComplete() => _cycles == 0;
+    internal bool OpComplete() => _cycles == 0;
 
     internal void Interrupt()
     {
@@ -95,7 +84,7 @@ internal class CPU : IClockAware
 
     private void PopulateOpcodeLookup()
     {
-        var assembly = typeof(CPU).Assembly;
+        var assembly = typeof(Cpu).Assembly;
         var opcodeTypes = assembly.GetTypes().Where(t => t.IsDefined(typeof(OpCodeAttribute), false));
 
         foreach (var type in opcodeTypes)

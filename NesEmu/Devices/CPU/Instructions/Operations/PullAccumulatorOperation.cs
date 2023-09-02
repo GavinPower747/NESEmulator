@@ -12,7 +12,7 @@ public class PullAccumulatorOperation : IOperationStrategy
 {
     public string Name => "PLA";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StackPointer++;
 

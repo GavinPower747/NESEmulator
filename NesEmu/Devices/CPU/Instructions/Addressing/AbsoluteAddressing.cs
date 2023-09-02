@@ -7,7 +7,7 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing;
 ///</summary>
 public class AbsoluteAddressing : IAddressingStrategy
 {
-    public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
+    public (ushort address, int extraCycles) GetOperationAddress(CpuRegisters registers, IBus bus)
     {
         var arg = bus.ReadWord(registers.ProgramCounter);
 

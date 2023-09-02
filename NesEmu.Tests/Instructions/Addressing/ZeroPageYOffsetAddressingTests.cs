@@ -19,7 +19,7 @@ public class ZeroPageYOffsetAddressingTests
     [Fact]
     public void ZeroPageYOffsetAddressing_Returns_CorrectValue()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x0000,
             Y = 0x0001

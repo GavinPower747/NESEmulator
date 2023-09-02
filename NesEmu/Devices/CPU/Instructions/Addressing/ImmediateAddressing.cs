@@ -8,7 +8,7 @@ namespace NesEmu.Devices.CPU.Instructions.Addressing;
 ///</summary>
 public class ImmediateAddressing : IAddressingStrategy
 {
-    public (ushort address, int extraCycles) GetOperationAddress(CPURegisters registers, IBus bus)
+    public (ushort address, int extraCycles) GetOperationAddress(CpuRegisters registers, IBus bus)
     {
         var address = registers.ProgramCounter;
         registers.ProgramCounter++;

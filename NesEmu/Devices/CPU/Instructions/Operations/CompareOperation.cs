@@ -8,9 +8,9 @@ public abstract class CompareOperation : IOperationStrategy
 {
     public abstract string Name { get; }
 
-    public abstract int Operate(ushort address, CPURegisters registers, IBus bus);
+    public abstract int Operate(ushort address, CpuRegisters registers, IBus bus);
 
-    protected int PerformOperation(byte registerVal, ushort address, CPURegisters registers, IBus bus)
+    protected int PerformOperation(byte registerVal, ushort address, CpuRegisters registers, IBus bus)
     {
         ushort memoryVal = bus.ReadByte(address);
         ushort comparedVal = (ushort)(registerVal - memoryVal);
@@ -35,7 +35,7 @@ public class CompareAccumulator : CompareOperation
 {
     public override string Name => "CMP";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(registers.Accumulator, address, registers, bus);
 }
 
@@ -46,7 +46,7 @@ public class CompareXRegister : CompareOperation
 {
     public override string Name => "CPX";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(registers.X, address, registers, bus);
 }
 
@@ -57,6 +57,6 @@ public class CompareYRegister : CompareOperation
 {
     public override string Name => "CPY";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(registers.Y, address, registers, bus);
 }

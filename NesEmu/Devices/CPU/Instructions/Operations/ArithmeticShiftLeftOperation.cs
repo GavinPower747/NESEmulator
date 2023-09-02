@@ -13,7 +13,7 @@ public class ArithmeticShiftLeftOperation : IOperationStrategy
 {
     public string Name => "ASL";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         byte memValue = bus.ReadByte(address);
         memValue <<= 1;
@@ -31,7 +31,7 @@ public class ArithmeticShiftLeftAccumulatorOperation : IOperationStrategy
 {
     public string Name => "ASL";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Accumulator <<= 1;
         registers.StatusRegister.Carry = (registers.Accumulator & 0xFF00) > 0;

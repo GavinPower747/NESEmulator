@@ -7,18 +7,18 @@ namespace NesEmu.Tests.Instructions.Addressing;
 
 public class ImpliedAddressingTests
 {
-    private readonly CPUBus _cpuBus;
+    private readonly CpuBus _cpuBus;
 
     public ImpliedAddressingTests()
     {
-        var cpu = new CPU();
-        _cpuBus = new CPUBus(cpu);
+        var cpu = new Cpu();
+        _cpuBus = new CpuBus(cpu);
     }
 
     [Fact]
     public void ImpliedAddressing_Returns_ProgramCounter()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             ProgramCounter = 0x00
         };
@@ -33,7 +33,7 @@ public class ImpliedAddressingTests
     [Fact]
     public void ImpliedAddressing_ShouldNot_ModifyStatus()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
         var status = new StatusRegister(0x00)
         {
             Zero = true
@@ -51,7 +51,7 @@ public class ImpliedAddressingTests
     [Fact]
     public void ImpliedAddressing_ShouldNot_Modify_ProgramCounter()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
         ushort initialProgramCounter = 0x00;
 
         registers.ProgramCounter = initialProgramCounter;

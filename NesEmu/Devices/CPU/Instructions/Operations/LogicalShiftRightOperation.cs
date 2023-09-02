@@ -13,7 +13,7 @@ public class LogicalShiftRightMemoryOperation : IOperationStrategy
 {
     public string Name => "LSR";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         byte origVal = bus.ReadByte(address);
         byte shiftedVal = (byte)(origVal / 2);
@@ -32,7 +32,7 @@ public class LogicalShiftRightAccumulatorOperation : IOperationStrategy
 {
     public string Name => "LSR";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         byte origVal = registers.Accumulator;
         byte shiftedVal = (byte)(origVal / 2);

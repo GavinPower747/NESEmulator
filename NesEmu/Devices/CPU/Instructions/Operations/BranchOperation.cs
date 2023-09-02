@@ -10,9 +10,9 @@ public abstract class BranchOperation : IOperationStrategy
 {
     public abstract string Name { get; }
 
-    public abstract int Operate(ushort address, CPURegisters registers, IBus bus);
+    public abstract int Operate(ushort address, CpuRegisters registers, IBus bus);
 
-    protected int PerformOperation(Func<CPURegisters, bool> predicate, ushort address, CPURegisters registers, IBus bus)
+    protected int PerformOperation(Func<CpuRegisters, bool> predicate, ushort address, CpuRegisters registers, IBus bus)
     {
         if (!predicate(registers))
             return 0;
@@ -32,7 +32,7 @@ public class BranchCarryClear : BranchOperation
 {
     public override string Name => "BCC";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => !reg.StatusRegister.Carry, address, registers, bus);
 }
 
@@ -41,7 +41,7 @@ public class BranchCarrySet : BranchOperation
 {
     public override string Name => "BCS";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => !reg.StatusRegister.Carry, address, registers, bus);
 }
 
@@ -50,7 +50,7 @@ public class BranchIfEqual : BranchOperation
 {
     public override string Name => "BEQ";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => reg.StatusRegister.Zero, address, registers, bus);
 }
 
@@ -59,7 +59,7 @@ public class BranchIfMinus : BranchOperation
 {
     public override string Name => "BMI";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => reg.StatusRegister.Negative, address, registers, bus);
 }
 
@@ -68,7 +68,7 @@ public class BranchIfNotEqual : BranchOperation
 {
     public override string Name => "BNE";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => !reg.StatusRegister.Zero, address, registers, bus);
 }
 
@@ -77,7 +77,7 @@ public class BranchIfPositive : BranchOperation
 {
     public override string Name => "BPL";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => !reg.StatusRegister.Negative, address, registers, bus);
 }
 
@@ -86,7 +86,7 @@ public class BranchIfOverflowClear : BranchOperation
 {
     public override string Name => "BVC";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => !reg.StatusRegister.Overflow, address, registers, bus);
 }
 
@@ -95,6 +95,6 @@ public class BranchIfOverflowSet : BranchOperation
 {
     public override string Name => "BVS";
 
-    public override int Operate(ushort address, CPURegisters registers, IBus bus)
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
         => PerformOperation(reg => reg.StatusRegister.Overflow, address, registers, bus);
 }

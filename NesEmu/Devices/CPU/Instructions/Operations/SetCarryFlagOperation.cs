@@ -9,7 +9,7 @@ public class SetCarryFlagOperation : IOperationStrategy
 {
     public string Name => "SEC";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StatusRegister.Carry = true;
 

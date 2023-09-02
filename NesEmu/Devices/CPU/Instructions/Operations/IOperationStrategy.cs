@@ -13,5 +13,5 @@ public interface IOperationStrategy
     ///Perform the specific operation
     ///</summary>
     ///<returns>The amount of extra cycles needed to complete the operation</returns>
-    int Operate(ushort address, CPURegisters registers, IBus bus);
+    int Operate(ushort address, CpuRegisters registers, IBus bus);
 }

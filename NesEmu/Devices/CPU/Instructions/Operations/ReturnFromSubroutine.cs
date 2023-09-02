@@ -9,7 +9,7 @@ public class ReturnFromSubroutine : IOperationStrategy
 {
     public string Name => "RTS";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.StackPointer++;
         registers.ProgramCounter = bus.ReadWord(registers.GetStackAddress());

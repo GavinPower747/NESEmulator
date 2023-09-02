@@ -12,7 +12,7 @@ public class IncrementMemoryOperation : IOperationStrategy
 {
     public string Name => "INC";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var data = bus.ReadByte(address);
         byte newValue = (byte)(data + 1);
@@ -29,7 +29,7 @@ public class IncrementXRegisterOperation : IOperationStrategy
 {
     public string Name => "INX";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.X += 1;
 
@@ -44,7 +44,7 @@ public class IncrementYRegisterOperation : IOperationStrategy
 {
     public string Name => "INY";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Y += 1;
 

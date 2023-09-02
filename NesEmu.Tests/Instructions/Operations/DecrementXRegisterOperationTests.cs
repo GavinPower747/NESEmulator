@@ -19,7 +19,7 @@ public class DecrementXRegisterOperationTests
     [Fact]
     public void DecrementXRegister_Should_DecrementRegister()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             X = 0x02
         };
@@ -35,7 +35,7 @@ public class DecrementXRegisterOperationTests
     [Fact]
     public void DecrementXRegister_Should_SetNegativeFlag_When_OperationResultsInNegativeResult()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             X = 0x00
         };
@@ -48,7 +48,7 @@ public class DecrementXRegisterOperationTests
     [Fact]
     public void DecrementXRegister_Should_SetZeroFlag_When_OperationResultsInZeroResult()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             X = 0x01
         };

@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="./Roms/*.nes" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="./Roms/*.*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

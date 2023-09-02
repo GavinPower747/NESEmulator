@@ -11,7 +11,7 @@ public class StoreYRegisterOperation : IOperationStrategy
 {
     public string Name => "STY";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         bus.Write(address, registers.Y);
 

@@ -15,7 +15,7 @@ public class StoreAccumulatorOperation : IOperationStrategy
 {
     public string Name => "STA";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         bus.Write(address, registers.Accumulator);
 

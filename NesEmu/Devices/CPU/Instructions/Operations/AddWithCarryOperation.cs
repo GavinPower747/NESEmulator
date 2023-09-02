@@ -17,7 +17,7 @@ public class AddWithCarryOperation : IOperationStrategy
 {
     public string Name => "ADC";
 
-    public int Operate(ushort address, CPURegisters registers, IBus bus)
+    public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var value = bus.ReadByte(address);
         var carryValue = registers.StatusRegister.Carry ? (byte)1 : (byte)0;

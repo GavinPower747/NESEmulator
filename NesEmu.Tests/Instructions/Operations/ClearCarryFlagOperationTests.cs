@@ -19,7 +19,7 @@ public class ClearCarryFlagOperationTests
     [Fact]
     public void ClearCarryFlagOperation_DoesNot_WriteToBus()
     {
-        var registers = new CPURegisters();
+        var registers = new CpuRegisters();
 
         new ClearCarryFlagOperation().Operate(0x00, registers, _bus);
 
@@ -29,7 +29,7 @@ public class ClearCarryFlagOperationTests
     [Fact]
     public void ClearCarryFlagOperation_ClearsCarryFlag()
     {
-        var registers = new CPURegisters
+        var registers = new CpuRegisters
         {
             StatusRegister = new StatusRegister(0x00)
             {
