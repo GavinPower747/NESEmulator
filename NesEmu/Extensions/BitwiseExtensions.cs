@@ -9,7 +9,7 @@ public static class BitwiseExtensions
     {
         byte negativeMask = 1 << 7;
 
-        return (val & negativeMask) == 1;
+        return (val & negativeMask) > 0;
     }
 
     ///<summary>
