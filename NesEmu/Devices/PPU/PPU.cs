@@ -38,6 +38,8 @@ public class PPU : IClockAware, ICPUAddressableDevice, IPPUAddressableDevice
     // Palette
     private byte[] _palleteData;
 
+    public event EventHandler<byte[]> FrameReady;
+    private byte[] _frameBuffer = new byte[TotalScanlines * CyclesPerLine];
 
     public PPU(IBus ppuBus)
     {
@@ -55,28 +57,57 @@ public class PPU : IClockAware, ICPUAddressableDevice, IPPUAddressableDevice
 
     public void Tick()
     {
+        byte white = 0xFF;
+        byte black = 0x00;
+
         _currentCycle++;
 
-        if(_currentCycle >= CyclesPerLine)
+        if (_currentCycle >= CyclesPerLine)
         {
             _currentCycle = 0;
             _currentScanline++;
 
-            if(_currentScanline >= TotalScanlines)
+            if (_currentScanline >= TotalScanlines)
             {
                 _currentScanline = 0;
-                
+                FrameReady?.Invoke(this, _frameBuffer);
+                _frameBuffer = new byte[TotalScanlines * CyclesPerLine];
+            }
+        }
+
+        var random = new Random().Next() % 2;
+
+        _frameBuffer[_currentScanline * CyclesPerLine + _currentCycle] = random switch
+        {
+            0 => black,
+            _ => white
+        };
+    }
+
+    private void Render()
+    {
+        _currentCycle++;
+
+        if (_currentCycle >= CyclesPerLine)
+        {
+            _currentCycle = 0;
+            _currentScanline++;
+
+            if (_currentScanline >= TotalScanlines)
+            {
+                _currentScanline = 0;
+
                 // Dispatch a frame ready event update the screen after every scanline
             }
         }
 
         SetRenderingStage();
 
-        if(_currentRenderingStage == PPURenderingStage.Visible)
+        if (_currentRenderingStage == PPURenderingStage.Visible)
         {
             RenderPixel();
 
-            switch(_currentCycle % 8)
+            switch (_currentCycle % 8)
             {
                 case 1:
                     // Fetch name table byte
@@ -95,25 +126,25 @@ public class PPU : IClockAware, ICPUAddressableDevice, IPPUAddressableDevice
                     break;
             }
         }
-        else if(_currentRenderingStage == PPURenderingStage.PreRender)
+        else if (_currentRenderingStage == PPURenderingStage.PreRender)
         {
-            if(_currentCycle == 1)
+            if (_currentCycle == 1)
             {
                 _statusRegister.IsInVBlank = false;
                 _statusRegister.SpriteZeroHit = false;
                 _statusRegister.SpriteOverflow = false;
             }
-            else if(_currentCycle == 280)
+            else if (_currentCycle == 280)
             {
                 // Copy Y to V
             }
-            else if(_currentCycle == 304)
+            else if (_currentCycle == 304)
             {
                 // Copy X to V
             }
         }
 
-        
+
     }
 
     public void Reset()
@@ -138,7 +169,7 @@ public class PPU : IClockAware, ICPUAddressableDevice, IPPUAddressableDevice
 
     public void WritePPU(ushort address, byte data)
     {
-        if(address >= 0x3F00 && address <= 0x3FFF)
+        if (address >= 0x3F00 && address <= 0x3FFF)
         {
             _palleteData[address & 0x1F] = data;
         }
@@ -151,14 +182,14 @@ public class PPU : IClockAware, ICPUAddressableDevice, IPPUAddressableDevice
 
         int backgroundPixel = _maskRegister.ShowBackground ? FetchTileData() : 0;
 
-        if(x < 8 && !_maskRegister.ShowBackgroundInLeftmost8Pixels)
+        if (x < 8 && !_maskRegister.ShowBackgroundInLeftmost8Pixels)
         {
             backgroundPixel = 0;
         }
 
         byte colour;
 
-        if(backgroundPixel == 0)
+        if (backgroundPixel == 0)
         {
             colour = 0;
         }
@@ -170,7 +201,7 @@ public class PPU : IClockAware, ICPUAddressableDevice, IPPUAddressableDevice
             colour = _ppuBus.ReadByte((ushort)(0x3F00 + (palette * 4) + pixel));
         }
 
-        
+
         _backgroundPixels[y][x] = colour;
     }
 

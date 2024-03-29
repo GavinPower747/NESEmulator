@@ -2,6 +2,7 @@ using NesEmu.Devices;
 using NesEmu.Devices.CPU;
 using NesEmu.Devices.Cartridge;
 using NesEmu.Devices.PPU;
+using System;
 
 namespace NesEmu.Core;
 
@@ -12,8 +13,9 @@ namespace NesEmu.Core;
 public class NintendoEntertainmentSystem
 {
     public readonly Disassembler Disassembler;
-    
-    private readonly PPU PPU;
+    public event EventHandler<byte[]> FrameReady;
+
+    private readonly PPU _ppu;
     private readonly Cpu _processor;
     private readonly CpuBus _cpuBus;
     private readonly PPUBus _ppuBus;
@@ -25,12 +27,14 @@ public class NintendoEntertainmentSystem
         _processor = new Cpu();
         _cpuBus = new CpuBus(_processor);
         _ppuBus = new PPUBus();
-        PPU = new PPU(_ppuBus);
+        _ppu = new PPU(_ppuBus);
         _ram = new Ram();
         Disassembler = new Disassembler(_cpuBus, _ppuBus, _processor);
 
         _cpuBus.ConnectDevice(_ram);
-        _cpuBus.ConnectDevice(PPU);
+        _cpuBus.ConnectDevice(_ppu);
+
+        _ppu.FrameReady += (s, e) => FrameReady?.Invoke(s, e);
     }
 
     public void Reset()
@@ -55,6 +59,11 @@ public class NintendoEntertainmentSystem
 
         _cpuBus.ConnectDevice(_cartridge);
         _ppuBus.ConnectDevice(_cartridge);
+    }
+
+    public void Step()
+    {
+        _ppu.Tick();
     }
 
     public void SaveState()
