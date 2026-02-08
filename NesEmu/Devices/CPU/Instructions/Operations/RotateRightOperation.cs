@@ -17,11 +17,11 @@ public class RotateRightOperation : IOperationStrategy
         var hadCarry = registers.StatusRegister.Carry;
         var value = bus.ReadByte(address);
 
-        registers.StatusRegister.Carry = (value & 0x80) != 0;
+        registers.StatusRegister.Carry = (value & 0x01) != 0;
         value >>= 1;
 
         if (hadCarry)
-            value |= 1;
+            value |= 0x80;
 
         bus.Write(address, value);
 
@@ -40,11 +40,11 @@ public class RotateRightAccumulatorOperation : IOperationStrategy
     {
         var hadCarry = registers.StatusRegister.Carry;
 
-        registers.StatusRegister.Carry = (registers.Accumulator & 0x80) != 0;
+        registers.StatusRegister.Carry = (registers.Accumulator & 0x01) != 0;
         registers.Accumulator >>= 1;
 
         if (hadCarry)
-            registers.Accumulator |= 1;
+            registers.Accumulator |= 0x80;
 
         registers.StatusRegister.SetZeroAndNegative(registers.Accumulator);
         return 0;

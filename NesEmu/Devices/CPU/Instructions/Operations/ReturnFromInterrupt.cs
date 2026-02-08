@@ -11,13 +11,23 @@ public class ReturnFromInterrupt : IOperationStrategy
 
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
+        // Pull status from stack
         registers.StackPointer++;
-
         var returnedStatus = bus.ReadByte(registers.GetStackAddress());
+
+        // Bit 5 always set, bit 4 (Break) ignored on pull
+        returnedStatus = (byte)((returnedStatus | 0x20) & ~0x10);
         registers.StatusRegister = new StatusRegister(returnedStatus);
 
+        // Pull PC low byte
         registers.StackPointer++;
-        registers.ProgramCounter = bus.ReadWord(registers.GetStackAddress());
+        byte pcLo = bus.ReadByte(registers.GetStackAddress());
+
+        // Pull PC high byte
+        registers.StackPointer++;
+        byte pcHi = bus.ReadByte(registers.GetStackAddress());
+
+        registers.ProgramCounter = (ushort)((pcHi << 8) | pcLo);
 
         return 0;
     }

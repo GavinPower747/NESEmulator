@@ -1,7 +1,7 @@
+using System;
 using NesEmu.Core;
 using NesEmu.Devices.CPU.Attributes;
 using NesEmu.Devices.CPU.Instructions.Addressing;
-using System;
 
 namespace NesEmu.Devices.CPU.Instructions.Operations;
 
@@ -17,10 +17,9 @@ public class PushProcessorStatusOperation : IOperationStrategy
     {
         ushort stackAddress = (ushort)(0x0100 + registers.StackPointer);
 
-        bus.Write(stackAddress, Convert.ToByte(registers.StatusRegister));
-
-        registers.StatusRegister.Break = false;
-        registers.StatusRegister.B = false;
+        // We need to push the status with the break and b flag set to 1, as per the 6502 behavior
+        byte modifiedStatus = (byte)(registers.StatusRegister | 0x30); // Set the break flag and B flag to 1
+        bus.Write(stackAddress, modifiedStatus);
 
         registers.StackPointer--;
 

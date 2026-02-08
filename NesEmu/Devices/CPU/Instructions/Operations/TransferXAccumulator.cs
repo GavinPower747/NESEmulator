@@ -12,6 +12,7 @@ public class TransferXAccumulator : IOperationStrategy
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Accumulator = registers.X;
+        registers.StatusRegister.SetZeroAndNegative(registers.Accumulator);
 
         return 0;
     }

@@ -21,15 +21,22 @@ public class SubtractWithCarryOperation : IOperationStrategy
     {
         var fetched = bus.ReadByte(address);
 
-        ushort value = (ushort)(fetched ^ 0x00FF);
-        byte carryValue = registers.StatusRegister.Carry ? (byte)1 : (byte)0;
+        // SBC is implemented as A + ~M + C (one's complement addition)
+        int invertedValue = fetched ^ 0xFF;
+        int carryValue = registers.StatusRegister.Carry ? 1 : 0;
 
-        byte subtracted = (byte)(registers.Accumulator + value + carryValue);
-        registers.StatusRegister.Carry = subtracted > 255;
-        registers.StatusRegister.SetZeroAndNegative(subtracted);
-        registers.StatusRegister.Overflow = Convert.ToBoolean(((~(registers.Accumulator ^ value) & (registers.Accumulator ^ value)) & 0x0080));
+        int sum = registers.Accumulator + invertedValue + carryValue;
+        byte result = (byte)(sum & 0xFF);
 
-        registers.Accumulator = (byte)(subtracted & 0x00FF);
+        // Carry is set if no borrow was needed (sum >= 256 in the addition view)
+        registers.StatusRegister.Carry = sum > 255;
+        registers.StatusRegister.SetZeroAndNegative(result);
+
+        // Overflow: same formula as ADC but with inverted operand
+        registers.StatusRegister.Overflow =
+            ((registers.Accumulator ^ result) & (invertedValue ^ result) & 0x80) != 0;
+
+        registers.Accumulator = result;
         return 1;
     }
 }

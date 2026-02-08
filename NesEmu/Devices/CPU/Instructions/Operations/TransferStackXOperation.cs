@@ -13,6 +13,7 @@ public class TransferStackXOperation : IOperationStrategy
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.X = registers.StackPointer;
+        registers.StatusRegister.SetZeroAndNegative(registers.X);
 
         return 0;
     }
