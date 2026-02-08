@@ -17,7 +17,7 @@ public static class BitwiseExtensions
     ///</summary>
     public static bool GetBitValue(this byte val, int bitNumber)
     {
-        byte bitMask = (byte)(1 << (bitNumber - 1));
+        byte bitMask = (byte)(1 << bitNumber);
 
         return (val & bitMask) > 0;
     }

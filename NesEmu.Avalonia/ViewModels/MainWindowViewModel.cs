@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Threading;
+using Avalonia;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using NesEmu.Core;
 using ReactiveUI;
-using Avalonia.Media.Imaging;
-using Avalonia;
-using Avalonia.Platform;
-using Avalonia.Media;
-using System.Threading;
 
 namespace NesEmu.Avalonia.ViewModels;
 
@@ -25,7 +25,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         _nes = nes ?? throw new ArgumentNullException("nes");
 
-        _screen = new WriteableBitmap(new PixelSize(256, 240), new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Unpremul);
+        _screen = new WriteableBitmap(
+            new PixelSize(256, 240),
+            new Vector(96, 96),
+            PixelFormat.Bgra8888,
+            AlphaFormat.Unpremul
+        );
 
         this.RaisePropertyChanged(nameof(Screen));
 
@@ -71,7 +76,7 @@ public class MainWindowViewModel : ViewModelBase
         Span<byte> GetPixel(ILockedFramebuffer buffer, int x, int y)
         {
             var bytesPerPixel = 4; // BGRA8888
-            
+
             var zero = (byte*)buffer.Address;
             var offset = y * buffer.RowBytes + x * bytesPerPixel;
 

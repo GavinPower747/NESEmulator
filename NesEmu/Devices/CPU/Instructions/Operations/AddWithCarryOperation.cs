@@ -20,14 +20,16 @@ public class AddWithCarryOperation : IOperationStrategy
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         var value = bus.ReadByte(address);
-        var carryValue = registers.StatusRegister.Carry ? (byte)1 : (byte)0;
-        var added = (byte)(registers.Accumulator + value + carryValue);
+        var carryValue = registers.StatusRegister.Carry ? 1 : 0;
+        int sum = registers.Accumulator + value + carryValue; // Use an int here to check for a carry before we truncate it to a byte
+        byte added = (byte)(sum & 0xFF);
 
-        registers.StatusRegister.Carry = added > 255;
+        registers.StatusRegister.Carry = sum > 255;
         registers.StatusRegister.SetZeroAndNegative(added);
-        registers.StatusRegister.Overflow = Convert.ToBoolean(((~(registers.Accumulator ^ value) & (registers.Accumulator ^ value)) & 0x0080));
+        registers.StatusRegister.Overflow =
+            ((registers.Accumulator ^ added) & (value ^ added) & 0x80) != 0;
 
-        registers.Accumulator = Convert.ToByte(added & 0x00FF);
+        registers.Accumulator = added;
 
         return 1;
     }

@@ -10,14 +10,21 @@ public abstract class CompareOperation : IOperationStrategy
 
     public abstract int Operate(ushort address, CpuRegisters registers, IBus bus);
 
-    protected int PerformOperation(byte registerVal, ushort address, CpuRegisters registers, IBus bus)
+    protected int PerformOperation(
+        byte registerVal,
+        ushort address,
+        CpuRegisters registers,
+        IBus bus
+    )
     {
-        ushort memoryVal = bus.ReadByte(address);
-        ushort comparedVal = (ushort)(registerVal - memoryVal);
+        byte memValue = bus.ReadByte(address);
 
-        registers.StatusRegister.Carry = comparedVal >= 0;
-        registers.StatusRegister.Zero = comparedVal == 0;
-        registers.StatusRegister.Negative = (comparedVal & 1 << 7) > 0;
+        // CMP sets carry if register >= memory
+        registers.StatusRegister.Carry = registerVal >= memValue;
+
+        // Result for Z and N flas is the low 8 bits of the subtraction
+        byte result = (byte)(registerVal - memValue);
+        registers.StatusRegister.SetZeroAndNegative(result);
 
         return 0;
     }
@@ -35,8 +42,8 @@ public class CompareAccumulator : CompareOperation
 {
     public override string Name => "CMP";
 
-    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
-        => PerformOperation(registers.Accumulator, address, registers, bus);
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus) =>
+        PerformOperation(registers.Accumulator, address, registers, bus);
 }
 
 [OpCode(OpCodeAddress = 0xE0, AddressingMode = typeof(ImmediateAddressing), Cycles = 2)]
@@ -46,8 +53,8 @@ public class CompareXRegister : CompareOperation
 {
     public override string Name => "CPX";
 
-    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
-        => PerformOperation(registers.X, address, registers, bus);
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus) =>
+        PerformOperation(registers.X, address, registers, bus);
 }
 
 [OpCode(OpCodeAddress = 0xC0, AddressingMode = typeof(ImmediateAddressing), Cycles = 2)]
@@ -57,6 +64,6 @@ public class CompareYRegister : CompareOperation
 {
     public override string Name => "CPY";
 
-    public override int Operate(ushort address, CpuRegisters registers, IBus bus)
-        => PerformOperation(registers.Y, address, registers, bus);
+    public override int Operate(ushort address, CpuRegisters registers, IBus bus) =>
+        PerformOperation(registers.Y, address, registers, bus);
 }

@@ -16,8 +16,8 @@ public class ArithmeticShiftLeftOperation : IOperationStrategy
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         byte memValue = bus.ReadByte(address);
+        registers.StatusRegister.Carry = (memValue & 0x80) > 0;
         memValue <<= 1;
-        registers.StatusRegister.Carry = (memValue & 0xFF00) > 0;
         registers.StatusRegister.SetZeroAndNegative(memValue);
 
         bus.Write(address, memValue);
@@ -33,8 +33,8 @@ public class ArithmeticShiftLeftAccumulatorOperation : IOperationStrategy
 
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
+        registers.StatusRegister.Carry = (registers.Accumulator & 0x80) > 0;
         registers.Accumulator <<= 1;
-        registers.StatusRegister.Carry = (registers.Accumulator & 0xFF00) > 0;
         registers.StatusRegister.SetZeroAndNegative(registers.Accumulator);
 
         return 0;

@@ -13,7 +13,7 @@ public class TransferAccumulatorY : IOperationStrategy
     public int Operate(ushort address, CpuRegisters registers, IBus bus)
     {
         registers.Y = registers.Accumulator;
-        registers.StatusRegister.Overflow = !registers.StatusRegister.Overflow;
+        registers.StatusRegister.SetZeroAndNegative(registers.Y);
         return 0;
     }
 }

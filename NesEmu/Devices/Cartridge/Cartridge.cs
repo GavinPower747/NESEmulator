@@ -1,7 +1,7 @@
-using NesEmu.Core;
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using NesEmu.Core;
 
 namespace NesEmu.Devices.Cartridge;
 
@@ -32,7 +32,7 @@ public class Cartridge : ICPUAddressableDevice, IPPUAddressableDevice
             {
                 throw new InvalidDataException("Invalid ROM file");
             }
-            
+
             _programBody = new List<byte>();
 
             int mirrorLowBit = header.Control1 & 1;
@@ -49,37 +49,33 @@ public class Cartridge : ICPUAddressableDevice, IPPUAddressableDevice
             var programData = reader.ReadBytes(1 * 0x4000);
             _programBody.AddRange(programData);
 
-            _characterRom = header.CharacterRomBanks > 0
-                ? reader.ReadBytes(header.CharacterRomBanks * 0x2000)
-                : new byte[0x2000];
+            _characterRom =
+                header.CharacterRomBanks > 0
+                    ? reader.ReadBytes(header.CharacterRomBanks * 0x2000)
+                    : new byte[0x2000];
 
             _mapper = GetMapper(mapperId, header.CharacterRomBanks, header.ProgramRomBanks);
         }
     }
 
-    private static Mapper GetMapper(int mapperId, int characterBankCount, int programBankCount) => mapperId switch
-    {
-        0 => new NROMMapper(programBankCount, characterBankCount),
-        _ => throw new ArgumentException($"Could not find mapper for Id: {mapperId}"),
-    };
+    private static Mapper GetMapper(int mapperId, int characterBankCount, int programBankCount) =>
+        mapperId switch
+        {
+            0 => new NROMMapper(programBankCount, characterBankCount),
+            _ => throw new ArgumentException($"Could not find mapper for Id: {mapperId}"),
+        };
 
     public byte ReadCpu(ushort address)
     {
         return 0;
     }
 
-    public void WriteCpu(ushort address, byte data)
-    {
-
-    }
+    public void WriteCpu(ushort address, byte data) { }
 
     public byte ReadPPU(ushort address)
     {
         return 0;
     }
 
-    public void WritePPU(ushort address, byte data)
-    {
-
-    }
+    public void WritePPU(ushort address, byte data) { }
 }
